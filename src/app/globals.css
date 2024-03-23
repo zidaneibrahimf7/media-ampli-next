@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* --background: 0 0% 100%; */
-    --background: 0 0% 92.94%;
+    --background: 0 0% 93.33%;
     --foreground: 222.2 84% 4.9%;
 
     /* --card: 0 0% 100%; */
@@ -43,7 +43,8 @@
     --danger-foreground: 210 40% 98%;
     --danger-hover: 0 100% 38%;
 
-    --success: 116 58% 65%;
+    /* --success: 116 58% 65%; */
+    --success: 107.08 35.52% 64.12%;
     --success-foreground: 210 40% 98%;
     --success-hover:102 48% 49%;
 
