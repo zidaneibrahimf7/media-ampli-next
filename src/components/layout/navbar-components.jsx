@@ -4,9 +4,9 @@ import React from 'react'
 import { usePathname } from 'next/navigation';
 import Link from 'next/link'
 
-import { CircleUser, UserRoundCog } from 'lucide-react'
+import { CircleUser, UserRoundCog, MonitorSmartphone, DiscAlbum} from 'lucide-react'
 
-export default function NavbarComponents({ role, page }) {
+export default function NavbarComponents() {
   // const isAdmin = role === 'admin';
   // const isOperator = role === 'operator';
 
@@ -25,20 +25,34 @@ export default function NavbarComponents({ role, page }) {
       icon: <UserRoundCog size={20} />,
       // hidden: isOperator,
     },
+    {
+      id: 3,
+      label: 'Device',
+      link: '/device',
+      icon: <MonitorSmartphone size={20} />,
+      // hidden: isOperator,
+    },
+    {
+      id: 4,
+      label: 'Platform',
+      link: '/platform',
+      icon: <DiscAlbum size={20} />,
+      // hidden: isOperator,
+    },
   ];
 
   const pathname = usePathname();
   // console.log(pathname, 'routerr')
 
   return (
-    <nav className="text-primary-foreground text-md">
-      <ul className="flex items-center gap-4 rounded-full bg-primary p-1 mx-3 w-[30%]">
+    <nav className="text-primary-foreground text-md mt-3">
+      <ul className="flex items-center gap-4 rounded-full bg-primary p-1 mx-3 px-3 w-[30.5%]">
         {menuList.map(menu => {
           if (!menu.hidden) {
             return (
               <li className="nav-item p-1" key={menu.id}>
                 <Link
-                  className={`nav-link text-bg-primary flex align-items-center gap-2 ${pathname === menu.link ? 'text-success' : ''}`}
+                  className={`nav-link text-bg-primary flex align-items-center gap-2 ${pathname === menu.link ? 'text-primary bg-success rounded-full p-2' : ''}`}
                   href={menu.link}
                 >
                   {menu.icon}

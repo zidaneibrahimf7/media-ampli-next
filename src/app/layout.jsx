@@ -2,6 +2,7 @@
 import MainLayout from '@/components/layout/MainLayout'
 import "./globals.css";
 import { Toaster } from 'react-hot-toast'
+import Provider from './Providers';
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -15,9 +16,11 @@ export default function RootLayout({ children }) {
       // <html lang="en">
       //   <body className={inter.className}>{children}</body>
       // </html>
-    <MainLayout>
-      <Toaster position='bottom-right' />
-      {children}
-    </MainLayout>
+      <Provider>
+        <MainLayout>
+          <Toaster position='bottom-right' />
+          {children}
+        </MainLayout>
+      </Provider>
   );
 }
