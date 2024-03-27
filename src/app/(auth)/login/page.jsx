@@ -101,11 +101,6 @@ export default function Login() {
                 onChange={formik.handleChange}
                 value={formik.values.username}
               />  
-               {/* {formik.errors.username && (
-                  // toasterSuccess('username tidak diinput')
-                  <ToasterSuccess message={'username tidak diinput'} />
-                  // <Label className="text-red-500 text-xs mx-2">{formik.errors.username}<span className="text-red-500">*</span></Label>
-                )} */}
                  <div className="relative flex-1 mx-3">
                   <Input
                     // className="flex-1 rounded rounded-2xl bg-primary-foreground m-2 p-1"
@@ -126,14 +121,16 @@ export default function Login() {
                   {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                 </button>
                  </div>
-
-              {/* {formik.errors.password && (
-                  // <ToasterFailed message={"password salah"} />
-                  <ToasterWarning message={"wow easy!"} />
-
-                  // <Label className="text-red-500 text-xs mx-2">{formik.errors.password}<span className="text-red-500">*</span></Label>
-                )}   */}
-              <Button variant="success" type='submit' className="mt-2 rounded rounded-2xl mx-2 ">Login</Button>
+                {
+                  formik.isSubmitting === false ?
+                  <>
+                  <Button variant="success" type='submit' className="mt-2 rounded rounded-2xl mx-2 ">Login</Button>
+                  </>
+                  :
+                  <>
+                  <button className='inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-success text-primary-foreground shadow-sm hover:bg-success-hover h-9 px-4 py-2 mt-2 rounded-2xl mx-2 disabled' disabled>Loading...<span className='loader-mini-loading text-xs mx-1'></span></button>
+                  </>
+                }
             </form>
           </div>
         </section>

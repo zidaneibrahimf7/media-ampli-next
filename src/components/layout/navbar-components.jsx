@@ -3,12 +3,16 @@
 import React from 'react'
 import { usePathname } from 'next/navigation';
 import Link from 'next/link'
+import { useSession } from 'next-auth/react';
 
 import { CircleUser, UserRoundCog, MonitorSmartphone, DiscAlbum} from 'lucide-react'
 
 export default function NavbarComponents() {
-  // const isAdmin = role === 'admin';
-  // const isOperator = role === 'operator';
+  const {data: session, status} = useSession()
+  // console.log(session, status, 'sss')
+  const isAdmin = session?.user?.role === 'admin';
+  const isOperator = session?.user?.role === 'operator';
+  // console.log(isAdmin, isOperator)
 
   const menuList = [
     {
@@ -30,14 +34,14 @@ export default function NavbarComponents() {
       label: 'Device',
       link: '/device',
       icon: <MonitorSmartphone size={20} />,
-      // hidden: isOperator,
+      hidden: isOperator,
     },
     {
       id: 4,
       label: 'Platform',
       link: '/platform',
       icon: <DiscAlbum size={20} />,
-      // hidden: isOperator,
+      hidden: isOperator,
     },
   ];
 
@@ -46,7 +50,7 @@ export default function NavbarComponents() {
 
   return (
     <nav className="text-primary-foreground text-md mt-3">
-      <ul className="flex items-center gap-4 rounded-full bg-primary p-1 mx-3 px-3 w-[30.5%]">
+      <ul className="flex items-center gap-4 rounded-full bg-primary p-1 mx-3 px-3" style={{ display: 'inline-flex', padding: '0.5rem' }}>
         {menuList.map(menu => {
           if (!menu.hidden) {
             return (

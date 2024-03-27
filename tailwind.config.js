@@ -66,6 +66,9 @@ module.exports = {
         danger: {
           DEFAULT: "hsl(var(--danger))",
           hover: "hsl(var(--danger-hover))"
+        },
+        backgroundCell: {
+          DEFAULT: "hsl(var(--backgroundCell))"
         }
       },
       borderRadius: {

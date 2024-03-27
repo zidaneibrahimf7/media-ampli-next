@@ -52,6 +52,9 @@
     --warning: 42.07 78.63% 54.12%;
     --warning-hover: 230 175 46;
 
+    --backgroundCell: 218.57 10.61% 74.12%
+
+
   }
  
   .dark {
@@ -118,6 +121,18 @@
   height:15px;
   border-radius:50%;
   background:conic-gradient(#0000 10%,#0F0202);
+  -webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 4px),#000 0);
+  animation:s3 0.5s infinite linear;
+}
+@keyframes s3 {to{transform: rotate(1turn)}}
+
+
+
+.loader-mini-loading {
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  background:conic-gradient(#0000 10%,#F4F4F4);
   -webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 4px),#000 0);
   animation:s3 0.5s infinite linear;
 }

@@ -12,6 +12,9 @@ export async function GET(req) {
   const accountId = searchParams.get('accountId')
   const ignoreSlot = searchParams.get('ignoreSlot')
   const ignoreCluster = searchParams.get('ignoreCluster')
+  const sort = searchParams.get('sort')
+  const sortValue = searchParams.get('sortValue')
+  // const filename = searchParams.get('filename')
 
 
   let path = ''
@@ -22,6 +25,9 @@ export async function GET(req) {
       break;
     case 'list':
       path = "Account/getAccountList"
+      break;
+    case 'media-profile':
+      path = "Media/getProfilePicture"
       break;
     default:
       path = ''
@@ -39,6 +45,15 @@ export async function GET(req) {
     if(status) body = {...body, status}
     if(statusActive) body = {...body, statusActive}
     if(platform) body = {...body, platform}
+    // if(filename) body = {filename}
+    if(sort && sortValue) {
+     body = {
+      ...body, 
+      sort: {
+        [sort]: +sortValue
+        }
+      } 
+    }
 
 
     let params = JSON.stringify({
@@ -47,7 +62,7 @@ export async function GET(req) {
       params: body
     })
 
-    // console.log(params, 'PARAMS')
+    // console.log(body, 'PARAMS')
 
 
     try {
@@ -97,7 +112,7 @@ export async function POST(req) {
     // console.log(headerList, 'headerss')
     let clientIp = headerList.get('x-forwarded-for').split(':')
     // console.log(clientIp, 'clientIp')
-    // clientIp = clientIp[clientIp.length - 1]
+    clientIp = clientIp[clientIp.length - 1]
     let bodyReq = await req.json()
     // console.log(bodyReq, 'bodyreq')
 
