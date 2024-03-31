@@ -15,12 +15,13 @@ import { Textarea } from '@/components/ui/textarea'
 
 import SelectSingle from '@/components/utilities/select'
 
-import { UserRoundPlus } from 'lucide-react';
+import { UserRoundPlus, Eye, EyeOff } from 'lucide-react';
 import { CaretSortIcon, CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import Loading from '@/components/utilities/Loading'
 
 export default function PreaccountPage(){
   const [preAccount, setPreAccount] = useState({})
@@ -28,6 +29,7 @@ export default function PreaccountPage(){
   const [limit, setLimit] = useState(20)
   const [currentPage, setPage] = useState(1)
   const [deleteParams, setDeleteParams] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   const [valueUpdate, setValueUpdate] = useState({})
 
@@ -79,8 +81,6 @@ export default function PreaccountPage(){
       setValueUpdate(value)
     }
   }
-
-
 
 
   const handleDelete = async(email) => {
@@ -208,19 +208,6 @@ export default function PreaccountPage(){
     onSubmit: async(values, {setSubmitting, resetForm}) => {
       // console.log(values)
       resetForm()
-      if (
-        values.email !== valueUpdate.email ||
-        values.password !== valueUpdate.password ||
-        values.backupCode !== valueUpdate.backupCode 
-        // Tambahkan kondisi untuk setiap input field lainnya
-      ) {
-        // Kirim data ke backend
-        console.log('Data yang dikirim:', values);
-        // Tambahkan logika untuk pengiriman data ke backend di sini
-      } else {
-        console.log('Tidak ada perubahan data');
-      }
-
       setSubmitting(false);
 
     // Memisahkan berdasarkan baris dan bergabungkan dengan koma
@@ -276,6 +263,9 @@ export default function PreaccountPage(){
       }
 
       console.log('params: ', params)
+      if(params) {
+
+      }
 
       setTimeout(() => {
         window.location.reload();
@@ -372,6 +362,7 @@ export default function PreaccountPage(){
                                 <Label className="text-red-500 text-xs mx-1">{formik.errors.backupCode}<span className="text-red-500 mx-1">*</span></Label>
                                 )
                             }
+                            <Button className="mt-4 flex gap-1" variant="" onClick={() => console.log('aku ke hit')}><Eye size={20} /> Show Password</Button>
                           </div>
                         </div>
                         <div className='grow w-1 rounded-sm py-3 m-5 text-black items-center border-primary'>
@@ -644,9 +635,9 @@ export default function PreaccountPage(){
                                                 />
                                               </div>
                                               <div className='my-4'>
-                                              <Label htmlFor='name' className='font-semibold'>Password</Label>
+                                              <Label htmlFor='passwordUpdate' className='font-semibold'>Password</Label>
                                               <Input 
-                                                type='text' 
+                                                type={showPassword ? 'text' : 'password'} 
                                                 className="col-span-3 border border-[#D1D5DB] h-[3rem] bg-white" 
                                                 defaultValue={valueUpdate.password}
                                                 id="passwordUpdate"
@@ -657,7 +648,7 @@ export default function PreaccountPage(){
                                                 />
                                             </div>
                                             <div className='my-4'>
-                                              <Label htmlFor='name' className='font-semibold'>Backup Code</Label>
+                                              <Label htmlFor='backupCodeUpdate' className='font-semibold'>Backup Code</Label>
                                               <Textarea 
                                               type='text'
                                               className="col-span-3 border border-[#D1D5DB] h-[20rem] bg-white" 
@@ -668,6 +659,7 @@ export default function PreaccountPage(){
                                               onBlur={formikUpdate.handleBlur}
                                               value={formikUpdate.values.backupCodeUpdate}
                                               />
+                                              <Button type="button" className="mt-4 flex gap-1" variant="" onClick={() => setShowPassword(!showPassword)}><Eye size={20} /> Show Password</Button>
                                             </div>
                                           </div>
                                           <div className='grow w-1 rounded-sm px-1 m-5 text-primary items-center'>
@@ -863,7 +855,12 @@ export default function PreaccountPage(){
               </div>
               </>
               :
-              <div className='flex justify-center'>Data is not available</div>
+              (
+                preAccount.length === 0 ?
+                  <div className='flex justify-center'>Data is not available</div>
+                :
+                  <div className='flex justify-center'><Loading /></div>
+              )
             }
           </div>
         </section>

@@ -29,7 +29,7 @@ const actionType = {
 
 function reducer(state, action) {
   const { type, payload } = action
-  console.log(type, payload, state)
+  // console.log(type, payload, state)
 
   switch(type) {
     case actionType.account:

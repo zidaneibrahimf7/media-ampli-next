@@ -22,7 +22,9 @@ const buttonVariants = cva(
         success:
           "bg-success text-primary-foreground shadow-sm hover:bg-success-hover",
         danger: 
-          "bg-danger text-primary-foreground shadow-sm hover:bg-danger-hover"
+          "bg-danger text-primary-foreground shadow-sm hover:bg-danger-hover",
+        warning: 
+          "bg-warning text-primary-foreground shadow-sm hover:bg-warning-hover"
       },
       size: {
         default: "h-9 px-4 py-2",

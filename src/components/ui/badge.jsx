@@ -18,8 +18,9 @@ const badgeVariants = cva(
         success:
           "bg-success text-primary-foreground shadow-sm",
         danger: 
-          "bg-danger text-primary-foreground shadow-sm"
-
+          "bg-danger text-primary-foreground shadow-sm",
+        warning:
+          "bg-warning text-primary-foreground shadow-sm",
       },
     },
     defaultVariants: {
