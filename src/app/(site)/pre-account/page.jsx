@@ -7,29 +7,35 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Badge } from "@/components/ui/badge"
 import { Button } from '@/components/ui/button'
 import moment from 'moment'
-import Pagination from '@/components/utilities/Pagination'
+// import Pagination from '@/components/utilities/Pagination'
 import { Label } from '@radix-ui/react-label'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
 
 import SelectSingle from '@/components/utilities/select'
+import Select from 'react-select'
+import { toast } from 'react-hot-toast'
 
-import { UserRoundPlus, Eye, EyeOff } from 'lucide-react';
+import { UserRoundPlus, Eye, EyeOff, Send } from 'lucide-react';
 import { CaretSortIcon, CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
-
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Loading from '@/components/utilities/Loading'
 
+import { useSession } from 'next-auth/react'
+
 export default function PreaccountPage(){
   const [preAccount, setPreAccount] = useState({})
   const [countAccount, setCountAccount] = useState(0)
-  const [limit, setLimit] = useState(20)
+  const [limit, setLimit] = useState(9999)
   const [currentPage, setPage] = useState(1)
   const [deleteParams, setDeleteParams] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+
+  const [searchPreaccount, setSearchPreaccount] = useState('')
+  const [showClearFilter, setShowClearFilter] = useState(false);
 
   const [valueUpdate, setValueUpdate] = useState({})
 
@@ -39,14 +45,17 @@ export default function PreaccountPage(){
   const [statusSelectTiktok, setStatusSelectTiktok] = useState(1)
   const [statusSelectDetik, setStatusSelectDetik] = useState(1)
   const [statusSelectKompas, setStatusSelectKompas] = useState(1)
+
+  const {data: session, status} = useSession()
   
-  const getPreaccountInfo = async (page) => {
+  const getPreaccountInfo = async (page, search) => {
     if(!page) page = currentPage
     let offset = (page === 1) ? 0 : ((page - 1) * limit)
 
     let params = {
       'offset': offset,
-      'limit' : limit
+      'limit' : limit,
+      'search' : (searchPreaccount ? searchPreaccount : '')
     }
 
     let response = await fetch('/api/Preaccount?act=getPreaccount', {
@@ -67,7 +76,7 @@ export default function PreaccountPage(){
     if(page !== currentPage) setPage(page)
 
     let { code, content } = data
-    // console.log(content)
+    // console.log(content, 'contentsss')
 
     if(code === 0 && content.results) {
       setPreAccount(content.results)
@@ -87,7 +96,38 @@ export default function PreaccountPage(){
     let params = {
       email: email
     }
-    console.log(params)
+    // console.log(params)
+    let response = await fetch('/api/Preaccount?act=deletePreaccount', {
+      method: "POST",
+      mode: 'cors',
+      cache: 'default',
+      // credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(params)
+    })
+
+    const data = await response.json()
+
+    const { code, content, message} = data
+
+    if(code === 0 && content) {
+      toast.success(message, {
+        style: {
+          border: '1px solid #55CD6C',
+          padding: '12px',
+          color: '#FFFAEE',
+          backgroundColor: '#55CD6C'
+        },
+        iconTheme: {
+          primary: '#FFFAEE',
+          secondary: '#55CD6C',
+        },
+      })
+    }
+
+    setTimeout(() => location.reload(), 2000)
 
 
   }
@@ -100,7 +140,7 @@ export default function PreaccountPage(){
     passwordFacebook: Yup.string().required('password required'),
     passwordDetik: Yup.string().required('password required'),
     msisdnDetik: Yup.string().required('phone number required'),
-    usernameTwitter: Yup.string().required('username required'),
+    usernameTwitter: Yup.string().required('username required').matches(/^@/, 'Username must add @'),
   })
 
 
@@ -181,7 +221,41 @@ export default function PreaccountPage(){
         ]
       }
 
-      console.log('params: ', params)
+      // console.log('params: ', params)
+
+      let response = await fetch('/api/Preaccount?act=createPreaccount', {
+        method: "POST",
+        mode: 'cors',
+        cache: 'default',
+        // credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      })
+
+      const data = await response.json()
+
+      const { code, content, message} = data
+
+      // console.log(data, 'data')
+
+      if(code === 0 && content) {
+        toast.success(message, {
+          style: {
+            border: '1px solid #55CD6C',
+            padding: '12px',
+            color: '#FFFAEE',
+            backgroundColor: '#55CD6C'
+          },
+          iconTheme: {
+            primary: '#FFFAEE',
+            secondary: '#55CD6C',
+          },
+        })
+      }
+
+      setTimeout(() => location.reload(), 2000)
     }
   })
 
@@ -262,14 +336,39 @@ export default function PreaccountPage(){
         ]
       }
 
-      console.log('params: ', params)
-      if(params) {
+      // console.log('params: ', params)
+      let response = await fetch('/api/Preaccount?act=updatePreaccount', {
+        method: "POST",
+        mode: 'cors',
+        cache: 'default',
+        // credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      })
 
+      const data = await response.json()
+      console.log(data, 'data')
+
+      const { code, content, message} = data
+
+      if(code === 0 && content) {
+        toast.success(message, {
+          style: {
+            border: '1px solid #55CD6C',
+            padding: '12px',
+            color: '#FFFAEE',
+            backgroundColor: '#55CD6C'
+          },
+          iconTheme: {
+            primary: '#FFFAEE',
+            secondary: '#55CD6C',
+          },
+        })
       }
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 2200);
+      setTimeout(() => location.reload(), 2000)
       
     }
   })
@@ -277,6 +376,11 @@ export default function PreaccountPage(){
   const options = [
     { value: "1", label: "Available" },
     { value: "0", label: "Not Available" }
+  ]
+
+  const optionsDisabled = [
+    { value: "1", label: "Available", isdisabled: true },
+    { value: "0", label: "Not Available",  isdisabled: true }
   ]
 
 
@@ -289,20 +393,47 @@ export default function PreaccountPage(){
   return (
     <>
       <main>
+      {
+        status === 'authenticated' ?
         <section>
           <div className='rounded-sm py-3 m-5 bg-white items-center shadow-xl'>
           <h1 className='text-2xl font-semibold my-5 mx-3'>Preaccount List</h1>
-            {
-              preAccount.length ?
-              <>
+          <>
              <div className='flex justify-between mx-1'>
-                <div>
+               <div>
                 {
                   countAccount > 1 ?
                   <span className='mx-1 px-2 py-5'>Total: {countAccount} accounts</span>
                   :
                   <span className='mx-1 px-2 py-5'>Total: {countAccount} account</span>
                 }
+               <div className='flex gap-2'>
+                  <form className='ml-3 mt-3'>
+                    <Label className='text-xs'>Search by email</Label>
+                    <Input
+                    type="text"
+                    placeholder="search and press enter..."
+                    onChange={(e) => {
+                      e.preventDefault()
+                      // console.log(e.target.value, 'vals')
+                      setSearchPreaccount(e.target.value)
+                      if(!e) {
+                        getPreaccountInfo()
+                      }
+                    }}
+                    onKeyPress={(e) => {
+                      if(e.key === 'Enter') {
+                        e.preventDefault()
+                        // console.log(e.key, e.target.value)
+                        setSearchPreaccount(e.target.value)
+                        getPreaccountInfo()
+                      }
+                    }}
+                    className="border border-primary"
+                    style={{'width': '12rem'}}
+                    />
+                  </form>
+                </div>
                </div>
                {/* Create Preaccount */}
                <div className='mx-3 px-1'>
@@ -334,7 +465,7 @@ export default function PreaccountPage(){
                           <div className='my-4'>
                             <Label htmlFor='name' className='font-semibold'>Password</Label>
                             <Input 
-                              type='password' 
+                              type={showPassword ? 'text' : 'password'}
                               className="col-span-3 border border-[#D1D5DB] h-[3rem] bg-white" 
                               id="password" 
                               name="password" 
@@ -362,7 +493,7 @@ export default function PreaccountPage(){
                                 <Label className="text-red-500 text-xs mx-1">{formik.errors.backupCode}<span className="text-red-500 mx-1">*</span></Label>
                                 )
                             }
-                            <Button className="mt-4 flex gap-1" variant="" onClick={() => console.log('aku ke hit')}><Eye size={20} /> Show Password</Button>
+                             <Button type="button" className="mt-4 flex gap-1" variant="" onClick={() => setShowPassword(!showPassword)}>{!showPassword ? <><Eye size={20} /> Show Password</>: <><EyeOff size={20} />Hide Password</>}</Button>
                           </div>
                         </div>
                         <div className='grow w-1 rounded-sm py-3 m-5 text-black items-center border-primary'>
@@ -406,7 +537,7 @@ export default function PreaccountPage(){
                               <div>
                                 <small className='text-xs ml-1'>Set Password</small>
                                 <Input
-                                type='password'
+                                type={showPassword ? 'text' : 'password'}
                                 placeholder="password..."
                                 className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
                                 id="passwordInstagram" 
@@ -435,7 +566,7 @@ export default function PreaccountPage(){
                             <div>
                               <small className='text-xs ml-1'>Set Password</small>
                                 <Input
-                                type='password'
+                                 type={showPassword ? 'text' : 'password'}
                                 placeholder="password..."
                                 className="col-span-3 border border-[#D1D5DB] mt-1 pt-1 w-[9.67rem] bg-white" 
                                 id="passwordFacebook" 
@@ -474,7 +605,7 @@ export default function PreaccountPage(){
                                 /> 
                                  {
                                   formik.errors.usernameTwitter && (
-                                    <Label className="text-red-500 text-xs mx-1">{formik.errors.usernameTwitter}<span className="text-red-500 mx-1">*</span></Label>
+                                    <Label className="text-red-500 text-xs mx-1">{formik.errors.usernameTwitter}<span className="text-red-500">*</span></Label>
                                 )
                                 }
                             </div>
@@ -493,7 +624,7 @@ export default function PreaccountPage(){
                             <div>
                               <small className='text-xs ml-1'>Set Password</small>
                               <Input
-                              type='password'
+                              type={showPassword ? 'text' : 'password'}
                               placeholder="password..."
                               className="col-span-3 border border-[#D1D5DB] mt-1 pt-1 w-[9.33rem] bg-white"
                               id="passwordDetik" 
@@ -529,14 +660,17 @@ export default function PreaccountPage(){
                         </div>
                       </section>
                       <div className=''>
-                        <Button type='submit' className="w-full">Submit</Button>
+                        <Button type='submit' variant="success" className="w-full flex gap-2"><Send size={18} />Submit</Button>
                       </div>
                     </form>
                   </DialogContent>
                 </Dialog>
                </div>
               </div>
-              {/* Table Preaccount */}
+              {
+                preAccount.length ? 
+                <>
+                 {/* Table Preaccount */}
               <div className='rounded-md border mx-4 my-5'>
                 <Table className="bg-secondary rounded-sm">
                   <TableHeader className="text-center items-center bg-primary">
@@ -556,6 +690,11 @@ export default function PreaccountPage(){
                       preAccount.map((value, index) => {
                         // console.log('getVall:', value)
                         // setDeleteParams(value.email)
+                        let countStatus = 0
+                        for (const objCount of value.platformLogin) {
+                          if (objCount.status === 0) countStatus++
+                        }
+
                         const backupCodeList = value.backupCode.map((v, i) => {
                           // console.log(v, 'sssss')
                           return (
@@ -567,303 +706,977 @@ export default function PreaccountPage(){
                           )
                         })
                         return (
-                          <TableRow className="hover:bg-white">
-                            <TableCell>{moment.utc(value.dateCreate).format('YYYY-MM-DD HH:mm')}</TableCell>
-                            <TableCell>{value.email}</TableCell>
-                            <TableCell>{backupCodeList}</TableCell>
-                            <TableCell>{value.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
-                            <TableCell><div className=''>{value.statusActivity}</div></TableCell>
-                            <TableCell>{moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
-                            <TableCell>
-                              <div className='flex gap-1'>
-                                {/* View PreAccount */}
-                                <Dialog>
-                                  <DialogTrigger><Button>View Preaccount</Button></DialogTrigger>
-                                  <DialogContent className="w-full" style={{ width: '90%', maxWidth: '65rem' }}>
-                                    <DialogHeader><DialogTitle>View Preaccounts</DialogTitle></DialogHeader>
-                                    <Table className="bg-secondary rounded-sm">
-                                      <TableHeader className="text-center items-center bg-primary">
-                                        <TableRow>
-                                          <TableHead className="text-secondary">Email</TableHead>
-                                          <TableHead className="text-secondary">Status</TableHead>
-                                          <TableHead className="text-secondary">Platform</TableHead>
-                                          <TableHead className="text-secondary">Password</TableHead>
-                                          <TableHead className="text-secondary">Username</TableHead>
-                                          <TableHead className="text-secondary">Phone Number</TableHead>
-                                        </TableRow>
-                                      </TableHeader>
-                                      <TableBody>
-                                        {value.platformLogin.map((v, i) => {
-                                          // console.log(value, 'vall')
-                                          return (
-                                            <>
-                                            <TableRow  className="hover:bg-white">
-                                              <TableCell>{value.email}</TableCell>
-                                              <TableCell>{v.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
-                                              <TableCell>{v.platform}</TableCell>
-                                              <TableCell>{v.password ? v.password : '-'}</TableCell>
-                                              <TableCell>{v.username ? v.username : '-'}</TableCell>
-                                              <TableCell>{v.msisdn ? v.msisdn : '-'}</TableCell>
+                          <>
+                          {
+                            countStatus === 6 ?
+                            <>
+                              <TableRow className="bg-danger/50">
+                                <TableCell>{moment.utc(value.dateCreate).format('YYYY-MM-DD HH:mm')}</TableCell>
+                                <TableCell>{value.email}</TableCell>
+                                <TableCell>{backupCodeList}</TableCell>
+                                <TableCell>{value.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
+                                <TableCell><div className=''>{value.statusActivity}</div></TableCell>
+                                <TableCell>{moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
+                                <TableCell>
+                                  <div className='flex gap-1'>
+                                    {/* View PreAccount */}
+                                    <Dialog>
+                                      <DialogTrigger><Button>View Preaccount</Button></DialogTrigger>
+                                      <DialogContent className="w-full" style={{ width: '90%', maxWidth: '65rem' }}>
+                                        <DialogHeader><DialogTitle>View Preaccounts</DialogTitle></DialogHeader>
+                                        <Table className="bg-secondary rounded-sm">
+                                          <TableHeader className="text-center items-center bg-primary">
+                                            <TableRow>
+                                              <TableHead className="text-secondary">Email</TableHead>
+                                              <TableHead className="text-secondary">Status</TableHead>
+                                              <TableHead className="text-secondary">Platform</TableHead>
+                                              <TableHead className="text-secondary">Password</TableHead>
+                                              <TableHead className="text-secondary">Username</TableHead>
+                                              <TableHead className="text-secondary">Phone Number</TableHead>
                                             </TableRow>
-                                            </>
-                                          )
-                                        })}
-                                      </TableBody>
-                                    </Table>
-                                  </DialogContent>
-                                </Dialog>
-                                {/* Edit PreAccount */}
-                                <Dialog onOpenChange={() => {dialogOpen(value)} }>
-                                  <DialogTrigger asChild><Button variant="success">Edit Preaccount</Button></DialogTrigger>
-                                  <DialogContent className="w-full" style={{ width: '100%', maxWidth: '65rem', height: 'auto' }}>
-                                    <DialogHeader><DialogTitle>Edit Preaccount</DialogTitle></DialogHeader>
-                                    <form method='POST' onSubmit={formikUpdate.handleSubmit} className=''>
-                                        <section className='flex w-full'>
-                                          <div className='grow w-1 rounded-sm px-1 m-5 text-primary items-center'>
-                                              <div className='my-4'>
-                                                <Label htmlFor='emailUpdate' className='font-semibold'>Email</Label>
-                                                <Input 
-                                                  type='email' 
-                                                  className="col-span-3 border border-[#D1D5DB] h-[3rem] bg-white" 
-                                                  defaultValue={valueUpdate.email}
-                                                  id="emailUpdate"
-                                                  name="emailUpdate"
-                                                  // value={formikUpdate.valuesUpdate.emailUpdate}
+                                          </TableHeader>
+                                          <TableBody>
+                                            {value.platformLogin.map((v, i) => {
+                                              // console.log(value, 'vall')
+                                              return (
+                                                <>
+                                                <TableRow className="hover:bg-white">
+                                                  <TableCell>{value.email}</TableCell>
+                                                  <TableCell>{v.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
+                                                  <TableCell>{v.platform}</TableCell>
+                                                  <TableCell>{v.password ? v.password : '-'}</TableCell>
+                                                  <TableCell>{v.username ? v.username : '-'}</TableCell>
+                                                  <TableCell>{v.msisdn ? v.msisdn : '-'}</TableCell>
+                                                </TableRow>
+                                                </>
+                                              )
+                                            })}
+                                          </TableBody>
+                                        </Table>
+                                      </DialogContent>
+                                    </Dialog>
+                                    {/* Edit PreAccount */}
+                                    <Dialog onOpenChange={() => {dialogOpen(value)} }>
+                                      <DialogTrigger asChild><Button variant="success">Edit Preaccount</Button></DialogTrigger>
+                                      <DialogContent className="w-full" style={{ width: '100%', maxWidth: '65rem', height: 'auto' }}>
+                                        <DialogHeader><DialogTitle>Edit Preaccount</DialogTitle></DialogHeader>
+                                        <form method='POST' onSubmit={formikUpdate.handleSubmit} className=''>
+                                            <section className='flex w-full'>
+                                              <div className='grow w-1 rounded-sm px-1 m-5 text-primary items-center'>
+                                                  <div className='my-4'>
+                                                    <Label htmlFor='emailUpdate' className='font-semibold'>Email</Label>
+                                                    <Input 
+                                                      type='email' 
+                                                      className="col-span-3 border border-[#D1D5DB] h-[3rem] bg-white" 
+                                                      defaultValue={valueUpdate.email}
+                                                      id="emailUpdate"
+                                                      name="emailUpdate"
+                                                      // value={formikUpdate.valuesUpdate.emailUpdate}
+                                                      onChange={formikUpdate.handleChange}
+                                                      onBlur={formikUpdate.handleBlur}
+                                                      value={formikUpdate.values.emailUpdate}
+                                                      disabled={true}
+                                                    />
+                                                  </div>
+                                                  <div className='my-4'>
+                                                  <Label htmlFor='passwordUpdate' className='font-semibold'>Password</Label>
+                                                  <Input 
+                                                    type={showPassword ? 'text' : 'password'} 
+                                                    className="col-span-3 border border-[#D1D5DB] h-[3rem] bg-white" 
+                                                    defaultValue={valueUpdate.password}
+                                                    id="passwordUpdate"
+                                                    name="passwordUpdate"
+                                                    onChange={formikUpdate.handleChange}
+                                                    onBlur={formikUpdate.handleBlur}
+                                                    value={formikUpdate.values.passwordUpdate}
+                                                    />
+                                                </div>
+                                                <div className='my-4'>
+                                                  <Label htmlFor='backupCodeUpdate' className='font-semibold'>Backup Code</Label>
+                                                  <Textarea 
+                                                  type={showPassword ? 'text' : 'password'}
+                                                  className="col-span-3 border border-[#D1D5DB] h-[20rem] bg-white" 
+                                                  defaultValue={valueUpdate.backupCode}
+                                                  id="backupCodeUpdate"
+                                                  name="backupCodeUpdate"
                                                   onChange={formikUpdate.handleChange}
                                                   onBlur={formikUpdate.handleBlur}
-                                                  value={formikUpdate.values.emailUpdate}
-                                                />
+                                                  value={formikUpdate.values.backupCodeUpdate}
+                                                  />
+                                                  <Button type="button" className="mt-4 flex gap-1" variant="" onClick={() => setShowPassword(!showPassword)}>{!showPassword ? <><Eye size={20} /> Show Password</>: <><EyeOff size={20} />Hide Password</>}</Button>
+                                                </div>
                                               </div>
-                                              <div className='my-4'>
-                                              <Label htmlFor='passwordUpdate' className='font-semibold'>Password</Label>
-                                              <Input 
-                                                type={showPassword ? 'text' : 'password'} 
-                                                className="col-span-3 border border-[#D1D5DB] h-[3rem] bg-white" 
-                                                defaultValue={valueUpdate.password}
-                                                id="passwordUpdate"
-                                                name="passwordUpdate"
-                                                onChange={formikUpdate.handleChange}
-                                                onBlur={formikUpdate.handleBlur}
-                                                value={formikUpdate.values.passwordUpdate}
-                                                />
+                                              <div className='grow w-1 rounded-sm px-1 m-5 text-primary items-center'>
+                                                <div className='grid grid-cols-2 gap-4 m-2 mx-4 px-3 my-3'>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Kompas</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ? (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectKompasUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                          />
+                                                        ) : (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectKompasUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                          />
+                                                        )
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Tiktok</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectTiktokUpdate(e.value)}
+                                                            defaultValue={{
+                                                                value: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status || 0,
+                                                                label: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status === 1 ? 'Available' : 'Not Available',
+                                                                isSelected: true
+                                                              }}
+                                                            />
+                                                            )
+                                                            :
+                                                            (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectTiktokUpdate(e.value)}
+                                                            defaultValue={{
+                                                                value: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status || 0,
+                                                                label: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status === 1 ? 'Available' : 'Not Available',
+                                                                isSelected: true
+                                                              }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Instagram</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectInstagramUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                            />
+                                                        ) 
+                                                        :
+                                                        (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectInstagramUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Password</small>
+                                                      {
+                                                      valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status === 0 ?
+                                                      <>
+                                                        <Input
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                        defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'instagram') || {}).password || ''}
+                                                        id="passwordInstagramUpdate"
+                                                        name="passwordInstagramUpdate"
+                                                        onChange={formikUpdate.handleChange}
+                                                        onBlur={formikUpdate.handleBlur}
+                                                        value={formikUpdate.values.passwordInstagramUpdate}
+                                                        disabled={true}
+                                                        /> 
+                                                      </>
+                                                      :
+                                                      <>
+                                                        <Input
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                        defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'instagram') || {}).password || ''}
+                                                        id="passwordInstagramUpdate"
+                                                        name="passwordInstagramUpdate"
+                                                        onChange={formikUpdate.handleChange}
+                                                        onBlur={formikUpdate.handleBlur}
+                                                        value={formikUpdate.values.passwordInstagramUpdate}
+                                                        /> 
+                                                      </>
+                                                    }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Facebook</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectFacebookUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                            />
+                                                        )
+                                                        :
+                                                        (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectFacebookUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Password</small>
+                                                      {
+                                                        valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status === 0 ||  valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        <>
+                                                          <Input
+                                                          type={showPassword ? 'text' : 'password'}
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'facebook') || {}).password || ''}
+                                                          id="passwordFacebookUpdate"
+                                                          name="passwordFacebookUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.passwordFacebookUpdate}
+                                                          disabled={true}
+                                                          /> 
+                                                        </>
+                                                        :
+                                                        <>
+                                                          <Input
+                                                          type={showPassword ? 'text' : 'password'}
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'facebook') || {}).password || ''}
+                                                          id="passwordFacebookUpdate"
+                                                          name="passwordFacebookUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.passwordFacebookUpdate}
+                                                          /> 
+                                                        </>
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Twitter</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectTwittermUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status === 1 ? 'Available' : 'Not Available'
+                                                          }}
+                                                            />
+                                                        )
+                                                        :
+                                                        (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectTwittermUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status === 1 ? 'Available' : 'Not Available'
+                                                          }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Username</small> 
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        <>
+                                                          <Input
+                                                          type='text'
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'twitter') || {}).username || ''}
+                                                          id="usernameTwitterUpdate"
+                                                          name="usernameTwitterUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.usernameTwitterUpdate}
+                                                          disabled={true}
+                                                          /> 
+                                                        
+                                                        </>
+                                                        :
+                                                        <>
+                                                          <Input
+                                                          type='text'
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'twitter') || {}).username || ''}
+                                                          id="usernameTwitterUpdate"
+                                                          name="usernameTwitterUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.usernameTwitterUpdate}
+                                                          /> 
+                                                        </>
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Detik</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectDetikUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status === 1 ? 'Available' : 'Not Available'
+                                                          }}
+                                                          />
+                                                        )
+                                                        :
+                                                        (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectDetikUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status === 1 ? 'Available' : 'Not Available'
+                                                          }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Password</small>
+                                                      {
+                                                        valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status === 0 ||  valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        <>
+                                                          <Input
+                                                          type={showPassword ? 'text' : 'password'}
+                                                          // placeholder="password..."
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).password || ''}
+                                                          id="passwordDetikUpdate"
+                                                          name="passwordDetikUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.passwordDetikUpdate}
+                                                          disabled={true}
+                                                          /> 
+                                                        </>
+                                                        :
+                                                        <>
+                                                          <Input
+                                                          type={showPassword ? 'text' : 'password'}
+                                                          // placeholder="password..."
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).password || ''}
+                                                          id="passwordDetikUpdate"
+                                                          name="passwordDetikUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.passwordDetikUpdate}
+                                                          /> 
+                                                        </>
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Phone Number</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        <>
+                                                          <Input
+                                                          type='text'
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).msisdn || ''}
+                                                          id="msisdnDetikUpdate"
+                                                          name="msisdnDetikUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.msisdnDetikUpdate}
+                                                          disabled={true}
+                                                          /> 
+                                                        </>
+                                                        :
+                                                        <>
+                                                          <Input
+                                                          type='text'
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).msisdn || ''}
+                                                          id="msisdnDetikUpdate"
+                                                          name="msisdnDetikUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.msisdnDetikUpdate}
+                                                          /> 
+                                                        </>
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </section>
+                                            <div className=''>
+                                              <Button type='submit' variant="success" className="w-full">Submit</Button>
                                             </div>
-                                            <div className='my-4'>
-                                              <Label htmlFor='backupCodeUpdate' className='font-semibold'>Backup Code</Label>
-                                              <Textarea 
-                                              type='text'
-                                              className="col-span-3 border border-[#D1D5DB] h-[20rem] bg-white" 
-                                              defaultValue={valueUpdate.backupCode}
-                                              id="backupCodeUpdate"
-                                              name="backupCodeUpdate"
-                                              onChange={formikUpdate.handleChange}
-                                              onBlur={formikUpdate.handleBlur}
-                                              value={formikUpdate.values.backupCodeUpdate}
-                                              />
-                                              <Button type="button" className="mt-4 flex gap-1" variant="" onClick={() => setShowPassword(!showPassword)}><Eye size={20} /> Show Password</Button>
+                                        </form>
+                                      </DialogContent>
+                                    </Dialog>
+                                    {/* Delete PreAccount */}
+                                    <Button variant="danger" onClick={() => handleDelete(value.email)}>Delete Preaccount</Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            </>
+                            :
+                            <>
+                              <TableRow className="hover:bg-white">
+                                <TableCell>{moment.utc(value.dateCreate).format('YYYY-MM-DD HH:mm')}</TableCell>
+                                <TableCell>{value.email}</TableCell>
+                                <TableCell>{backupCodeList}</TableCell>
+                                <TableCell>{value.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
+                                <TableCell><div className=''>{value.statusActivity}</div></TableCell>
+                                <TableCell>{moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
+                                <TableCell>
+                                  <div className='flex gap-1'>
+                                    {/* View PreAccount */}
+                                    <Dialog>
+                                      <DialogTrigger><Button>View Preaccount</Button></DialogTrigger>
+                                      <DialogContent className="w-full" style={{ width: '90%', maxWidth: '65rem' }}>
+                                        <DialogHeader><DialogTitle>View Preaccounts</DialogTitle></DialogHeader>
+                                        <Table className="bg-secondary rounded-sm">
+                                          <TableHeader className="text-center items-center bg-primary">
+                                            <TableRow>
+                                              <TableHead className="text-secondary">Email</TableHead>
+                                              <TableHead className="text-secondary">Status</TableHead>
+                                              <TableHead className="text-secondary">Platform</TableHead>
+                                              <TableHead className="text-secondary">Password</TableHead>
+                                              <TableHead className="text-secondary">Username</TableHead>
+                                              <TableHead className="text-secondary">Phone Number</TableHead>
+                                            </TableRow>
+                                          </TableHeader>
+                                          <TableBody>
+                                            {value.platformLogin.map((v, i) => {
+                                              // console.log(value, 'vall')
+                                              return (
+                                                <>
+                                                <TableRow className="hover:bg-white">
+                                                  <TableCell>{value.email}</TableCell>
+                                                  <TableCell>{v.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
+                                                  <TableCell>{v.platform}</TableCell>
+                                                  <TableCell>{v.password ? v.password : '-'}</TableCell>
+                                                  <TableCell>{v.username ? v.username : '-'}</TableCell>
+                                                  <TableCell>{v.msisdn ? v.msisdn : '-'}</TableCell>
+                                                </TableRow>
+                                                </>
+                                              )
+                                            })}
+                                          </TableBody>
+                                        </Table>
+                                      </DialogContent>
+                                    </Dialog>
+                                    {/* Edit PreAccount */}
+                                    <Dialog onOpenChange={() => {dialogOpen(value)} }>
+                                      <DialogTrigger asChild><Button variant="success">Edit Preaccount</Button></DialogTrigger>
+                                      <DialogContent className="w-full" style={{ width: '100%', maxWidth: '65rem', height: 'auto' }}>
+                                        <DialogHeader><DialogTitle>Edit Preaccount</DialogTitle></DialogHeader>
+                                        <form method='POST' onSubmit={formikUpdate.handleSubmit} className=''>
+                                            <section className='flex w-full'>
+                                              <div className='grow w-1 rounded-sm px-1 m-5 text-primary items-center'>
+                                                  <div className='my-4'>
+                                                    <Label htmlFor='emailUpdate' className='font-semibold'>Email</Label>
+                                                    <Input 
+                                                      type='email' 
+                                                      className="col-span-3 border border-[#D1D5DB] h-[3rem] bg-white" 
+                                                      defaultValue={valueUpdate.email}
+                                                      id="emailUpdate"
+                                                      name="emailUpdate"
+                                                      // value={formikUpdate.valuesUpdate.emailUpdate}
+                                                      onChange={formikUpdate.handleChange}
+                                                      onBlur={formikUpdate.handleBlur}
+                                                      value={formikUpdate.values.emailUpdate}
+                                                      disabled={true}
+                                                    />
+                                                  </div>
+                                                  <div className='my-4'>
+                                                  <Label htmlFor='passwordUpdate' className='font-semibold'>Password</Label>
+                                                  <Input 
+                                                    type={showPassword ? 'text' : 'password'} 
+                                                    className="col-span-3 border border-[#D1D5DB] h-[3rem] bg-white" 
+                                                    defaultValue={valueUpdate.password}
+                                                    id="passwordUpdate"
+                                                    name="passwordUpdate"
+                                                    onChange={formikUpdate.handleChange}
+                                                    onBlur={formikUpdate.handleBlur}
+                                                    value={formikUpdate.values.passwordUpdate}
+                                                    />
+                                                </div>
+                                                <div className='my-4'>
+                                                  <Label htmlFor='backupCodeUpdate' className='font-semibold'>Backup Code</Label>
+                                                  <Textarea 
+                                                  type={showPassword ? 'text' : 'password'}
+                                                  className="col-span-3 border border-[#D1D5DB] h-[20rem] bg-white" 
+                                                  defaultValue={valueUpdate.backupCode}
+                                                  id="backupCodeUpdate"
+                                                  name="backupCodeUpdate"
+                                                  onChange={formikUpdate.handleChange}
+                                                  onBlur={formikUpdate.handleBlur}
+                                                  value={formikUpdate.values.backupCodeUpdate}
+                                                  />
+                                                  <Button type="button" className="mt-4 flex gap-1" variant="" onClick={() => setShowPassword(!showPassword)}>{!showPassword ? <><Eye size={20} /> Show Password</>: <><EyeOff size={20} />Hide Password</>}</Button>
+                                                </div>
+                                              </div>
+                                              <div className='grow w-1 rounded-sm px-1 m-5 text-primary items-center'>
+                                                <div className='grid grid-cols-2 gap-4 m-2 mx-4 px-3 my-3'>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Kompas</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ? (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectKompasUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                          />
+                                                        ) : (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectKompasUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                          />
+                                                        )
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Tiktok</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectTiktokUpdate(e.value)}
+                                                            defaultValue={{
+                                                                value: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status || 0,
+                                                                label: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status === 1 ? 'Available' : 'Not Available',
+                                                                isSelected: true
+                                                              }}
+                                                            />
+                                                            )
+                                                            :
+                                                            (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectTiktokUpdate(e.value)}
+                                                            defaultValue={{
+                                                                value: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status || 0,
+                                                                label: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status === 1 ? 'Available' : 'Not Available',
+                                                                isSelected: true
+                                                              }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Instagram</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectInstagramUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                            />
+                                                        ) 
+                                                        :
+                                                        (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectInstagramUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Password</small>
+                                                      {
+                                                      valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status === 0 ?
+                                                      <>
+                                                        <Input
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                        defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'instagram') || {}).password || ''}
+                                                        id="passwordInstagramUpdate"
+                                                        name="passwordInstagramUpdate"
+                                                        onChange={formikUpdate.handleChange}
+                                                        onBlur={formikUpdate.handleBlur}
+                                                        value={formikUpdate.values.passwordInstagramUpdate}
+                                                        disabled={true}
+                                                        /> 
+                                                      </>
+                                                      :
+                                                      <>
+                                                        <Input
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                        defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'instagram') || {}).password || ''}
+                                                        id="passwordInstagramUpdate"
+                                                        name="passwordInstagramUpdate"
+                                                        onChange={formikUpdate.handleChange}
+                                                        onBlur={formikUpdate.handleBlur}
+                                                        value={formikUpdate.values.passwordInstagramUpdate}
+                                                        /> 
+                                                      </>
+                                                    }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Facebook</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectFacebookUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                            />
+                                                        )
+                                                        :
+                                                        (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectFacebookUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status === 1 ? 'Available' : 'Not Available',
+                                                              isSelected: true
+                                                            }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Password</small>
+                                                      {
+                                                        valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status === 0 ||  valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        <>
+                                                          <Input
+                                                          type={showPassword ? 'text' : 'password'}
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'facebook') || {}).password || ''}
+                                                          id="passwordFacebookUpdate"
+                                                          name="passwordFacebookUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.passwordFacebookUpdate}
+                                                          disabled={true}
+                                                          /> 
+                                                        </>
+                                                        :
+                                                        <>
+                                                          <Input
+                                                          type={showPassword ? 'text' : 'password'}
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'facebook') || {}).password || ''}
+                                                          id="passwordFacebookUpdate"
+                                                          name="passwordFacebookUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.passwordFacebookUpdate}
+                                                          /> 
+                                                        </>
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Twitter</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectTwittermUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status === 1 ? 'Available' : 'Not Available'
+                                                          }}
+                                                            />
+                                                        )
+                                                        :
+                                                        (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectTwittermUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status === 1 ? 'Available' : 'Not Available'
+                                                          }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Username</small> 
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        <>
+                                                          <Input
+                                                          type='text'
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'twitter') || {}).username || ''}
+                                                          id="usernameTwitterUpdate"
+                                                          name="usernameTwitterUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.usernameTwitterUpdate}
+                                                          disabled={true}
+                                                          /> 
+                                                        
+                                                        </>
+                                                        :
+                                                        <>
+                                                          <Input
+                                                          type='text'
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'twitter') || {}).username || ''}
+                                                          id="usernameTwitterUpdate"
+                                                          name="usernameTwitterUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.usernameTwitterUpdate}
+                                                          /> 
+                                                        </>
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                  <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
+                                                    <Label htmlFor='' className='font-semibold ml-1'>Detik</Label>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Status</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        (
+                                                          <SelectSingle 
+                                                            options={optionsDisabled}
+                                                            isOptionDisabled={(option) => option.isdisabled}
+                                                            onChange={(e) => setStatusSelectDetikUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status === 1 ? 'Available' : 'Not Available'
+                                                          }}
+                                                          />
+                                                        )
+                                                        :
+                                                        (
+                                                          <SelectSingle 
+                                                            options={options}
+                                                            onChange={(e) => setStatusSelectDetikUpdate(e.value)}
+                                                            defaultValue={{
+                                                              value: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status || 0,
+                                                              label: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status === 1 ? 'Available' : 'Not Available'
+                                                          }}
+                                                            />
+                                                        )
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Password</small>
+                                                      {
+                                                        valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status === 0 ||  valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        <>
+                                                          <Input
+                                                          type={showPassword ? 'text' : 'password'}
+                                                          // placeholder="password..."
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).password || ''}
+                                                          id="passwordDetikUpdate"
+                                                          name="passwordDetikUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.passwordDetikUpdate}
+                                                          disabled={true}
+                                                          /> 
+                                                        </>
+                                                        :
+                                                        <>
+                                                          <Input
+                                                          type={showPassword ? 'text' : 'password'}
+                                                          // placeholder="password..."
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).password || ''}
+                                                          id="passwordDetikUpdate"
+                                                          name="passwordDetikUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.passwordDetikUpdate}
+                                                          /> 
+                                                        </>
+                                                      }
+                                                    </div>
+                                                    <div>
+                                                      <small className='text-xs ml-1'>Set Phone Number</small>
+                                                      {
+                                                        valueUpdate.platformLogin?.find && valueUpdate.platformLogin.find(v => v.lastActivity) ?
+                                                        <>
+                                                          <Input
+                                                          type='text'
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).msisdn || ''}
+                                                          id="msisdnDetikUpdate"
+                                                          name="msisdnDetikUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.msisdnDetikUpdate}
+                                                          disabled={true}
+                                                          /> 
+                                                        </>
+                                                        :
+                                                        <>
+                                                          <Input
+                                                          type='text'
+                                                          className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
+                                                          defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).msisdn || ''}
+                                                          id="msisdnDetikUpdate"
+                                                          name="msisdnDetikUpdate"
+                                                          onChange={formikUpdate.handleChange}
+                                                          onBlur={formikUpdate.handleBlur}
+                                                          value={formikUpdate.values.msisdnDetikUpdate}
+                                                          /> 
+                                                        </>
+                                                      }
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </section>
+                                            <div className=''>
+                                              <Button type='submit' variant="success" className="w-full">Submit</Button>
                                             </div>
-                                          </div>
-                                          <div className='grow w-1 rounded-sm px-1 m-5 text-primary items-center'>
-                                            <div className='grid grid-cols-2 gap-4 m-2 mx-4 px-3 my-3'>
-                                              <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
-                                                <Label htmlFor='' className='font-semibold ml-1'>Kompas</Label>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Status</small>
-                                                  <SelectSingle 
-                                                    options={options}
-                                                      // placeholders={'Available'}
-                                                    // onChange={formikUpdate.handleChange}
-                                                    // onChange={(e) => {console.log(e, 'status kompasss')}}
-                                                    onChange={(e) => setStatusSelectKompasUpdate(e.value)}
-                                                    // id=''
-                                                      // defaultValue={valueUpdate?.platformLogin?.map((v) => {
-                                                      //   // let {status} = v
-                                                      //   // console.log(v.platform, 'platformm')
-                                                      //   if(v.platform === 'kompas') {
-                                                      //     // console.log(v.status, 'kompasnya')
-                                                      //     return {'value': v.status , 'label': v.status === 1 ? 'Available' : 'Not Available'}
-                                                      //   }
-                                                      // })}
-                                                      defaultValue={{
-                                                        value: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status || 0,
-                                                        label: valueUpdate?.platformLogin?.find(v => v.platform === 'kompas')?.status === 1 ? 'Available' : 'Not Available',
-                                                        isSelected: true
-                                                      }}
-                                                    />
-                                                </div>
-                                              </div>
-                                              <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
-                                                <Label htmlFor='' className='font-semibold ml-1'>Tiktok</Label>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Status</small>
-                                                  <SelectSingle 
-                                                    options={options}
-                                                      onChange={(e) => setStatusSelectTiktokUpdate(e.value)}
-                                                      defaultValue={{
-                                                        value: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status || 0,
-                                                        label: valueUpdate?.platformLogin?.find(v => v.platform === 'tiktok')?.status === 1 ? 'Available' : 'Not Available',
-                                                        isSelected: true
-                                                      }}
-                                                    />
-                                                </div>
-                                              </div>
-                                              <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
-                                                <Label htmlFor='' className='font-semibold ml-1'>Instagram</Label>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Status</small>
-                                                  <SelectSingle 
-                                                    options={options}
-                                                    onChange={(e) => setStatusSelectInstagramUpdate(e.value)}
-                                                    defaultValue={{
-                                                      value: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status || 0,
-                                                      label: valueUpdate?.platformLogin?.find(v => v.platform === 'instagram')?.status === 1 ? 'Available' : 'Not Available',
-                                                      isSelected: true
-                                                    }}
-                                                    />
-                                                </div>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Password</small>
-                                                  <Input
-                                                  type='text'
-                                                  className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
-                                                  defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'instagram') || {}).password || ''}
-                                                  id="passwordInstagramUpdate"
-                                                  name="passwordInstagramUpdate"
-                                                  onChange={formikUpdate.handleChange}
-                                                  onBlur={formikUpdate.handleBlur}
-                                                  value={formikUpdate.values.passwordInstagramUpdate}
-                                                  /> 
-                                                </div>
-                                              </div>
-                                              <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
-                                                <Label htmlFor='' className='font-semibold ml-1'>Facebook</Label>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Status</small>
-                                                  <SelectSingle 
-                                                    options={options}
-                                                    onChange={(e) => setStatusSelectFacebookUpdate(e.value)}
-                                                    defaultValue={{
-                                                      value: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status || 0,
-                                                      label: valueUpdate?.platformLogin?.find(v => v.platform === 'facebook')?.status === 1 ? 'Available' : 'Not Available',
-                                                      isSelected: true
-                                                    }}
-                                                    />
-                                                </div>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Password</small>
-                                                  <Input
-                                                  type='text'
-                                                  className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
-                                                  defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'facebook') || {}).password || ''}
-                                                  id="passwordFacebookUpdate"
-                                                  name="passwordFacebookUpdate"
-                                                  onChange={formikUpdate.handleChange}
-                                                  onBlur={formikUpdate.handleBlur}
-                                                  value={formikUpdate.values.passwordFacebookUpdate}
-                                                  /> 
-                                                </div>
-                                              </div>
-                                              <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
-                                                <Label htmlFor='' className='font-semibold ml-1'>Twitter</Label>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Status</small>
-                                                  <SelectSingle 
-                                                    options={options}
-                                                    onChange={(e) => setStatusSelectTwittermUpdate(e.value)}
-                                                    defaultValue={{
-                                                      value: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status || 0,
-                                                      label: valueUpdate?.platformLogin?.find(v => v.platform === 'twitter')?.status === 1 ? 'Available' : 'Not Available'
-                                                  }}
-                                                    />
-                                                </div>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Username</small>
-                                                  <Input
-                                                  type='text'
-                                                  className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
-                                                  defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'twitter') || {}).username || ''}
-                                                  id="usernameTwitterUpdate"
-                                                  name="usernameTwitterUpdate"
-                                                  onChange={formikUpdate.handleChange}
-                                                  onBlur={formikUpdate.handleBlur}
-                                                  value={formikUpdate.values.usernameTwitterUpdate}
-                                                  /> 
-                                                </div>
-                                              </div>
-                                              <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
-                                                <Label htmlFor='' className='font-semibold ml-1'>Detik</Label>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Status</small>
-                                                  <SelectSingle 
-                                                    options={options}
-                                                    onChange={(e) => setStatusSelectDetikUpdate(e.value)}
-                                                    defaultValue={{
-                                                      value: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status || 0,
-                                                      label: valueUpdate?.platformLogin?.find(v => v.platform === 'detik')?.status === 1 ? 'Available' : 'Not Available'
-                                                  }}
-                                                    />
-                                                </div>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Password</small>
-                                                  <Input
-                                                  type='text'
-                                                  // placeholder="password..."
-                                                  className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
-                                                  defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).password || ''}
-                                                  id="passwordDetikUpdate"
-                                                  name="passwordDetikUpdate"
-                                                  onChange={formikUpdate.handleChange}
-                                                  onBlur={formikUpdate.handleBlur}
-                                                  value={formikUpdate.values.passwordDetikUpdate}
-                                                  /> 
-                                                </div>
-                                                <div>
-                                                  <small className='text-xs ml-1'>Set Phone Number</small>
-                                                  <Input
-                                                  type='text'
-                                                  className="col-span-3 border-[#D1D5DB] w-[9.67rem] bg-white" 
-                                                  defaultValue={(valueUpdate?.platformLogin?.find(v => v.platform === 'detik') || {}).msisdn || ''}
-                                                  id="msisdnDetikUpdate"
-                                                  name="msisdnDetikUpdate"
-                                                  onChange={formikUpdate.handleChange}
-                                                  onBlur={formikUpdate.handleBlur}
-                                                  value={formikUpdate.values.msisdnDetikUpdate}
-                                                  /> 
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </section>
-                                        <div className=''>
-                                          <Button type='submit' className="w-full">Submit</Button>
-                                        </div>
-                                    </form>
-                                  </DialogContent>
-                                </Dialog>
-                                {/* Delete PreAccount */}
-                                <Button variant="danger" onClick={() => handleDelete(value.email)}>Delete Preaccount</Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
+                                        </form>
+                                      </DialogContent>
+                                    </Dialog>
+                                    {/* Delete PreAccount */}
+                                    <Button variant="danger" onClick={() => handleDelete(value.email)}>Delete Preaccount</Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            </>
+                          }
+                          </>
                         )
                       })
                     }
                   </TableBody>
                 </Table>
               </div>
-              <div className='flex justify-end mt-4 mx-4'>
-                <Pagination length={countAccount} limit={limit} page={currentPage} callback={getPreaccountInfo} />
-              </div>
-              </>
-              :
-              (
-                preAccount.length === 0 ?
-                  <div className='flex justify-center'>Data is not available</div>
+              {/* <div className='flex justify-end mt-4 mx-4'>
+                <Pagination length={preAccount.length} limit={limit} page={currentPage} callback={getPreaccountInfo} />
+              </div> */}
+                </>
                 :
+                <>
+                {
+                  preAccount.length === 0 ?
+                  <div className='flex justify-center'>Data is not available</div>
+                  :
                   <div className='flex justify-center'><Loading /></div>
-              )
-            }
+
+                }
+                </>
+              }
+            </>
           </div>
         </section>
+          :
+        <>
+        <div className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center'><span className='loader'></span></div>
+        </>
+      }
       </main>
     </>
   )

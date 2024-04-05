@@ -3,6 +3,8 @@ import { headers } from 'next/headers'
 export async function GET(req) {
   const { searchParams } = new URL(req.url)
   const act = searchParams.get('act')
+  const offset = searchParams.get('offset')
+  const limit = searchParams.get('limit')
   const deviceId = searchParams.get('deviceId')
   const status = searchParams.get('status')
   const statusActivity = searchParams.get('statusActivity')
@@ -28,7 +30,7 @@ export async function GET(req) {
     let clientIp = headerList.get('x-forwarded-for').split(':')
     clientIp = clientIp[clientIp.length - 1];
 
-    let body = {}
+    let body = {offset, limit}
     if(deviceId) body ={...body, deviceId}
     if(status) body = {...body, status}
     if(statusActivity) body = {...body, statusActivity}

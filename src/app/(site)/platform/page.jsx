@@ -11,13 +11,18 @@ import moment from 'moment'
 
 import toast from 'react-hot-toast';
 
+import { FolderSync, Send } from 'lucide-react'
+
 import { Formik, Form, Field, FieldArray } from 'formik'
 import * as Yup from 'yup';
 import Loading from '@/components/utilities/Loading'
 
+import { useSession } from 'next-auth/react'
+
 export default function PlatformPage() {
   const [platforms, setPlatforms] = useState({})
   const [countPlatform, setCountPlatform] = useState(0)
+  const { data: session, status} = useSession()
 
 
   const getPlatform = async () => {
@@ -102,6 +107,8 @@ export default function PlatformPage() {
   return (
     <>
     <main>
+    {
+      status === 'authenticated' ?
       <section className='rounded-sm py-3 m-5 bg-white items-center shadow-xl'>
       <h1 className='text-2xl font-semibold my-5 mx-3'>Platforms List</h1>
         {
@@ -141,7 +148,7 @@ export default function PlatformPage() {
                         <TableCell>{moment.utc(v.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
                         <TableCell>
                           <Dialog>
-                            <DialogTrigger><Button variant="success">Update Data</Button></DialogTrigger>
+                            <DialogTrigger><Button variant="success" className="flex gap-2"><FolderSync size={20} />Update Data</Button></DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                               <DialogHeader>
                                 <DialogTitle>Update Data</DialogTitle>
@@ -167,7 +174,7 @@ export default function PlatformPage() {
                                       )
                                     }
                                     <div className='flex justify-end mt-4'>
-                                      <Button type="submit">Submit</Button>
+                                      <Button type="submit" variant="success" className="flex gap-2"><Send size={20} />Submit</Button>
                                     </div>
                                   </Form>
                                 </div>
@@ -194,6 +201,11 @@ export default function PlatformPage() {
           )
         }
       </section>
+      :
+      <>
+      <div className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center'><span className='loader'></span></div>
+     </>
+    }
     </main>
     </>
   )

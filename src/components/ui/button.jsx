@@ -20,7 +20,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         success:
-          "bg-success text-primary-foreground shadow-sm hover:bg-success-hover",
+          "bg-success-hover text-primary-foreground shadow-sm hover:bg-success",
         danger: 
           "bg-danger text-primary-foreground shadow-sm hover:bg-danger-hover",
         warning: 

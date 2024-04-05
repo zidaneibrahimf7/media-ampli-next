@@ -7,13 +7,18 @@ import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input'
 
 import Pagination from '@/components/utilities/Pagination'
 
 import { Users, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react'
 
 import moment from 'moment'
+
+import { useSession } from 'next-auth/react'
+
 import getMediaPhotoProfile from '@/helpers/getMediaPhotoProfile'
+import Loading from '@/components/utilities/Loading'
 
 
 const actionType = {
@@ -25,6 +30,7 @@ const actionType = {
   changePlatform: 'changePlatform',
   selectedPlatform: 'selectedPlatform',
   sort: 'sort',
+  search: 'search',
 }
 
 function reducer(state, action) {
@@ -48,6 +54,8 @@ function reducer(state, action) {
       return {...state, platformId: payload}
     case actionType.sort:
       return {...state, sort: payload}
+    case actionType.search:
+        return {...state, search: payload}
     default:
         return state;
   }
@@ -60,16 +68,19 @@ const initialState = {
   currentPage: 1,
   totalAccount: 0,
   platformFilter: null,
-  // clusterId: null,
+  search: '',
   platformId: null,
   sort: {
     name: 1
-  }
+  },
 }
 
 export default function AccountsPage() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [accountSummary, setAccountSummary] = useState({})
+
+  const {data: session, status} = useSession()
+
   // const [countAccount, setAccountCount] = useState(0)
 
 
@@ -99,7 +110,7 @@ export default function AccountsPage() {
     if(!page) page = state.currentPage
     let offset = (page === 1) ? 0 : ((page - 1) * state.limit)
 
-    let response = await fetch('/api/Account?act=account&offset=' + offset + '&limit=' + state.limit + '&status=active' + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) )
+    let response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '') + '&status=active' + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) )
     const data = await response.json()
 
     const { code, content } = data
@@ -141,7 +152,7 @@ export default function AccountsPage() {
   }
 
   const changedPlatform = (platform) => {
-    // console.log(platform, 'ss')
+    // console.log(platform, 'accountPlatform')
     state.currentPage = 1
     dispatch({'type': actionType.changePlatform, 'payload': platform})
     dispatch({'type': actionType.updatePage, payload: state.currentPage})
@@ -172,11 +183,10 @@ export default function AccountsPage() {
     if(code === 0 && content) {
       setAccountSummary(content)
       // setAccountCount(content.count)
-
     }
-
-
   }
+
+  
 
 
   useEffect(() => {
@@ -190,6 +200,9 @@ export default function AccountsPage() {
   return (
     <>
       <main>
+      {
+        status === 'authenticated' ?
+        <>
         <section className='bg-white rounded rounded-lg m-4 shadow-xl'>
           <div className='p-10 flex gap-2'>
             <Users size={50} className='' />
@@ -200,9 +213,9 @@ export default function AccountsPage() {
                 <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.total}</h3>
                 :
                 (
-                  !accountSummary ?
+                  accountSummary && accountSummary.total === 0 ?
                   <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1'>0</h3>
+                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
                   </>
                   :
                   <>
@@ -219,9 +232,9 @@ export default function AccountsPage() {
                 <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.facebook}</h3>
                 :
                 (
-                  !accountSummary ?
+                  accountSummary && accountSummary.facebook === 0 ?
                   <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1'>0</h3>
+                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
                   </>
                   :
                   <>
@@ -238,9 +251,9 @@ export default function AccountsPage() {
                 <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.twitter}</h3>
                 :
                 (
-                  !accountSummary ?
+                  accountSummary && accountSummary.twitter === 0 ?
                   <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1'>0</h3>
+                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
                   </>
                   :
                   <>
@@ -257,9 +270,9 @@ export default function AccountsPage() {
                 <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.instagram}</h3>
                 :
                 (
-                  !accountSummary ?
+                  accountSummary && accountSummary.instagram === 0 ?
                   <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1'>0</h3>
+                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
                   </>
                   :
                   <>
@@ -276,9 +289,9 @@ export default function AccountsPage() {
                 <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.tiktok}</h3>
                 :
                 (
-                  !accountSummary ?
+                  accountSummary && accountSummary.tiktok === 0 ?
                   <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1'>0</h3>
+                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
                   </>
                   :
                   <>
@@ -295,9 +308,9 @@ export default function AccountsPage() {
                 <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.kompas}</h3>
                 :
                 (
-                  !accountSummary ?
+                  accountSummary && accountSummary.kompas === 0 ?
                   <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1'>0</h3>
+                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
                   </>
                   :
                   <>
@@ -314,9 +327,9 @@ export default function AccountsPage() {
                 <h3 className='font-semibold text-4xl pt-1 mt-2'>{accountSummary.detik}</h3>
                 :
                 (
-                  !accountSummary ?
+                  accountSummary && accountSummary.detik === 0 ?
                   <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1'>0</h3>
+                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
                   </>
                   :
                   <>
@@ -350,7 +363,7 @@ export default function AccountsPage() {
             </div>
           </div>
           {/* Total Account */}
-          <div>
+          <div className='flex justify-between'>
             {
               state.totalAccount ?
               <>
@@ -364,63 +377,155 @@ export default function AccountsPage() {
               :
               <p className='text-md font-normal mt-3 mx-3'>Total: 0 account</p>
             }
+            <form className='mx-1'>
+              <Input 
+                type="text"
+                placeholder="search..."
+                onChange={((e) => {
+                  e.preventDefault()
+                  // console.log(e.target.value)
+                  dispatch({'type': actionType.search, 'payload': e.target.value})
+                  getAccount()
+                  if(!e) {
+                    getAccount()
+                  }
+                })}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                      e.preventDefault();
+                      // console.log(e.key, e.target.value)
+                      dispatch({'type': actionType.search, 'payload': e.target.value})
+                      getAccount()
+                      // dispatch({'type': actionType.updatePage, payload: state.currentPage})
+                  }
+                }}
+                className="mr-3 border border-primary"
+                style={{'width' : '10rem'}}
+              />
+            </form>
           </div>
           {/* Table Account */}
             {
-              state.account ?
+              state.account && state.account > 0 ?
               <>
             <div className='rounded-md border mx-4 my-5'>
+              <Table className="bg-secondary rounded-sm">
+                <TableHeader className="text-center items-center bg-primary">
+                  <TableRow>
+                    <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('name')}>Name {sortKeyValueAccount === 'name' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                    <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('id')}>User ID {sortKeyValueAccount === 'id' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                    <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('statusActive')}>Status {sortKeyValueAccount === 'statusActive' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                    <TableHead className="text-secondary">Platform</TableHead>
+                    <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('lastActivity')}>Last Activity {sortKeyValueAccount === 'lastActivity' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {
+                    state.account.map((value, index) => {
+                      // console.log(value, 'vass')
+                      // const nameWithProfilePicture = <div className='flex gap-1'><img src={`/media-profile/${value?.profilePicture}`} width={20} height={20} alt={value.name} />{value.name}</div>
+                      return (
+                        <>
+                          {
+
+                          }
+                          <TableRow className="hover:bg-white" key={index}>
+                            {/* <TableCell>{nameWithProfilePicture}</TableCell> */}
+                            <TableCell>{value.name}</TableCell>
+                            {/* <TableCell>{value.userId ? value.userId : "-"}</TableCell> */}
+                            <TableCell>{value.id ? value.id : " "}</TableCell>
+                            {/* <TableCell>{value.username ? value.username : " "}</TableCell> */}
+                            <TableCell>{value.statusActive ? value.statusActive : " "}</TableCell>
+                            <TableCell>{value.platform ? value.platform : " "}</TableCell>
+                            <TableCell>{value.lastActivity? moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm') : "-"}</TableCell>
+                          </TableRow>
+                        </>
+                      )
+                    })
+                  }
+                </TableBody>
+              </Table>
+            </div>
+            <div className='flex justify-end mt-3 mx-4'>
+              <Pagination length={state.totalAccount} limit={state.limit} page={state.currentPage} callback={(pageNumber) => getAccount(pageNumber, (sortKeyValueAccount ? sortKeyValueAccount : 'name'), valueSortAccount)} />
+            </div>
+            </>
+              :
+            <>
+            {
+              state.account && state.totalAccount === 0 ?
+              <div className='flex justify-center mx-3'>Data is not available</div>
+              :
+              <>
+               <div className='flex justify-center mx-3'><Loading /></div>
+              </>
+            }
+            </>
+            }
+        </div>
+         {/* <div className='grow w-5 rounded-sm py-3 m-5 text-primary items-center shadow-xl bg-white'>
+          <div>
+            <h1 className='text-2xl font-semibold my-5 mx-3'>Running Task</h1>
+            <div className='flex flex-wrap gap-2 mx-3'>
+            <Select onValueChange={changedPlatformRunningTask}>
+                <SelectTrigger className="w-auto mt-4">
+                  <SelectValue/>
+                </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem>All platform</SelectItem> 
+                    <SelectItem value='facebook' key='facebook'>Facebook</SelectItem>
+                    <SelectItem value='instagram' key='instagram'>Instagram</SelectItem>
+                    <SelectItem value='twitter' key='twitter'>Twitter</SelectItem>
+                    <SelectItem value='tiktok' key='tiktok'>Tiktok</SelectItem>
+                    <SelectItem value='kompas' key='kompas'>Kompas</SelectItem>
+                    <SelectItem value='detik' key='detik'>Detik</SelectItem>
+                </SelectContent>
+            </Select>
+            </div>
+          </div>
+          <div>
+            {
+              state.totalAccountRunningTask > 1 ?
+              <p className='text-md font-normal mt-3 mx-3'>Total: {state.totalAccountRunningTask} accounts</p>
+              :
+              <p className='text-md font-normal mt-3 mx-3'>Total: {state.totalAccountRunningTask} account</p>
+            }
+          </div>
+          <div className='rounded-md border mx-4 my-5'>
             <Table className="bg-secondary rounded-sm">
               <TableHeader className="text-center items-center bg-primary">
                 <TableRow>
-                  <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('name')}>Name {sortKeyValueAccount === 'name' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
-                  <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('id')}>User ID {sortKeyValueAccount === 'id' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
-                  <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('statusActive')}>Status {sortKeyValueAccount === 'statusActive' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
-                  {/* <TableHead className="text-secondary">User ID</TableHead> */}
-                  {/* <TableHead className="text-secondary">Device ID</TableHead> */}
-                  {/* <TableHead className="text-secondary">Username</TableHead> */}
-                  {/* <TableHead className="text-secondary">Status</TableHead> */}
-                  <TableHead className="text-secondary">Platform</TableHead>
-                  <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('lastActivity')}>Last Activity {sortKeyValueAccount === 'lastActivity' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                    <TableHead className="text-secondary">Task Name</TableHead>
+                    <TableHead className="text-secondary">Platform</TableHead>
+                    <TableHead className="text-secondary">Project Name</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {
-                   state.account.map((value, index) => {
-                    // console.log(value, 'vass')
-                    // const nameWithProfilePicture = <div className='flex gap-1'><img src={`/media-profile/${value?.profilePicture}`} width={20} height={20} alt={value.name} />{value.name}</div>
-                    return (
-                      <TableRow className="hover:bg-white" key={index}>
-                        {/* <TableCell>{nameWithProfilePicture}</TableCell> */}
-                        <TableCell>{value.name}</TableCell>
-                        {/* <TableCell>{value.userId ? value.userId : "-"}</TableCell> */}
-                        <TableCell>{value.id ? value.id : " "}</TableCell>
-                        {/* <TableCell>{value.username ? value.username : " "}</TableCell> */}
-                        <TableCell>{value.statusActive ? value.statusActive : " "}</TableCell>
-                        <TableCell>{value.platform ? value.platform : " "}</TableCell>
-                        <TableCell>{value.lastActivity? moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm') : "-"}</TableCell>
-                      </TableRow>
-                    )
-                  })
+                  state.runningTask && state.runningTask.length > 0 ?
+                  <>
+                  <TableRow>
+                    <TableCell></TableCell>
+                  </TableRow>
+                  </>
+                  :
+                  <TableRow>
+                    <TableCell className='text-center'></TableCell> 
+                    <TableCell className='text-center'>Data is not available</TableCell> 
+                    <TableCell className='text-center'></TableCell> 
+                  </TableRow>
                 }
               </TableBody>
             </Table>
-            </div>
-            <div className='flex justify-end mt-3 mx-4'>
-            {/* <Pagination length={state.totalAccount} limit={state.limit} page={state.currentPage} callback={(pageNumber) => getAccountList(pageNumber, (sortKeyValue ? sortKeyValue : 'dateCreate'), valueSort)} /> */}
-              <Pagination length={state.totalAccount} limit={state.limit} page={state.currentPage} callback={(pageNumber) => getAccount(pageNumber, (sortKeyValueAccount ? sortKeyValueAccount : 'name'), valueSortAccount)} />
-              </div>
-            </>
-              :
-            <>
-              <div className='flex justify-center mx-3'>Data is not found</div>
-            </>
-            }
-        </div>
-         <div className='grow w-5 rounded-sm py-3 m-5 text-primary items-center shadow-xl bg-white'>
-          <h1 className='text-2xl font-semibold my-5 mx-3'>Running Task</h1>
-        </div>
+          </div>
+        </div> */}
         </section>
+        </>
+        :
+        <>
+        <div className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center'><span className='loader'></span></div>
+       </>
+      }
       </main>
     </>
   )

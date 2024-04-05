@@ -5,6 +5,7 @@ export async function GET(req) {
     const act = searchParams.get('act')
     const offset = searchParams.get('offset')
     const limit = searchParams.get('limit')
+    const search = searchParams.get('search')
 
     let path = ''
 
@@ -18,6 +19,9 @@ export async function GET(req) {
         case 'updatePreaccount':
             path = 'preaccount/updatePreaccount'
             break;
+        case 'updatePreaccount':
+            path = 'preaccount/updatePreaccount'
+            break;
         default:
             path = ''
     }
@@ -27,7 +31,7 @@ export async function GET(req) {
         let clientIp = headerList.get('x-forwarded-for').split(':')
         clientIp = clientIp[clientIp.length - 1];
 
-        let body = {offset, limit}
+        let body = {offset, limit, search}
 
         let params = JSON.stringify({
             "username": "admin",
@@ -72,6 +76,9 @@ export async function POST(req) {
             break;
         case 'createPreaccount':
             path = 'preaccount/createPreaccount'
+            break;
+        case 'updatePreaccount':
+            path = 'preaccount/updatePreaccount'
             break;
         case 'deletePreaccount':
             path = 'preaccount/deletePreaccount'

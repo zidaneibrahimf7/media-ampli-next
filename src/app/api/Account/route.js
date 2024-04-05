@@ -39,7 +39,8 @@ export async function GET(req) {
     let clientIp = headerList.get('x-forwarded-for').split(':')
     clientIp = clientIp[clientIp.length - 1];
 
-    let body = { offset, limit, search: ''}
+    let body = { offset, limit}
+    if(search) body = {...body, search}
     if(ignoreSlot) body = {...body, ignoreSlot}
     if(ignoreCluster) body = {...body, ignoreCluster}
     if(status) body = {...body, status}
