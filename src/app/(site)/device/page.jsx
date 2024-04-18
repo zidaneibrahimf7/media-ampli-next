@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
 
-import { Check, Construction } from 'lucide-react'
+import { Check, Construction, MonitorCheck } from 'lucide-react'
 import moment from 'moment'
 import Loading from '@/components/utilities/Loading'
 import Pagination from '@/components/utilities/Pagination'
@@ -180,7 +180,7 @@ export default function DevicesPage() {
                             <TableRow className="hover:bg-white">
                               <TableCell>{v.deviceIpPort}</TableCell>
                               <TableCell>{v.port}</TableCell>
-                              <TableCell>{v.isMaintenance === 0 ? <Badge variant="success" className="ml-3" style={{'marginLeft' : '1.4rem'}}>On</Badge> : <Badge variant="warning">Maintenance</Badge>}</TableCell>
+                              <TableCell>{v.isMaintenance === 0 ? <Badge variant="success" className="ml-3" style={{'marginLeft' : '1.4rem'}}>Active</Badge> : <Badge variant="warning">Maintenance</Badge>}</TableCell>
                               <TableCell><div className='mx-3 px-3'>{v.statusActivity}</div></TableCell>
                               <TableCell>{moment.utc(v.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
                               <TableCell>
@@ -190,9 +190,9 @@ export default function DevicesPage() {
                                 >
                                 {
                                   v.isMaintenance === 0 ?
-                                  <div className='flex items-center gap-2'><Construction size={22} className="" />Maintenance</div>
+                                  <div className='flex items-center gap-2'><Construction size={22} className="" />Set Maintenance</div>
                                   :
-                                  <div className='flex items-center gap-2'><Check size={22} className="" />Active</div>
+                                  <div className='flex items-center gap-2'><MonitorCheck size={22} className="" />Set Active</div>
                                 }
                                 </Button>
                               </TableCell>

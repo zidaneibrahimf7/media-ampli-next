@@ -41,7 +41,7 @@ export const authOptions = {
           });
 
           const user = await response.json()
-          console.log(user, 'user')
+          // console.log(user, 'user')
 
           const { code, content } = user
 
@@ -58,7 +58,7 @@ export const authOptions = {
   callbacks: {
     async session({ session, user, token }) {
       let { username, role, fullName } = token
-      console.log(username, role, fullName, 'lahhh')
+      // console.log(username, role, fullName, 'lahhh')
       session = { ...session, user: { ...user, username, role, fullName } }
       return session
     },

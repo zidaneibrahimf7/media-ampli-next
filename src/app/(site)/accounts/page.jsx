@@ -8,10 +8,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 
 import Pagination from '@/components/utilities/Pagination'
 
-import { Users, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react'
+import { Users, ArrowUp, ArrowDown, ArrowUpDown} from 'lucide-react'
 
 import moment from 'moment'
 
@@ -29,6 +30,7 @@ const actionType = {
   updatePage: 'updatePage',
   changePlatform: 'changePlatform',
   selectedPlatform: 'selectedPlatform',
+  changeStatus: 'changeStatus',
   sort: 'sort',
   search: 'search',
 }
@@ -52,6 +54,8 @@ function reducer(state, action) {
       return {...state, platformFilter: payload}
     case actionType.selectedPlatform:
       return {...state, platformId: payload}
+    case actionType.changeStatus:
+      return {...state, statusFilter: payload}
     case actionType.sort:
       return {...state, sort: payload}
     case actionType.search:
@@ -68,6 +72,7 @@ const initialState = {
   currentPage: 1,
   totalAccount: 0,
   platformFilter: null,
+  statusFilter: null,
   search: '',
   platformId: null,
   sort: {
@@ -110,7 +115,37 @@ export default function AccountsPage() {
     if(!page) page = state.currentPage
     let offset = (page === 1) ? 0 : ((page - 1) * state.limit)
 
-    let response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '') + '&status=active' + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) )
+    // let response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) )
+    
+    // if(state.statusFilter === 'active') {
+    //   let response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) + '&status=active&statusActive=active')
+    // } else if (state.statusFilter === 'not_available') {
+    //   console.log('banned')
+    // } else if (state.statusFilter === 'backup') {
+    //   console.log('backup')
+    // } 
+    // else {
+    //   console.log('woww')
+    // }
+
+    let response
+    console.log(state.statusFilter, 'ssss')
+
+    switch(state.statusFilter){
+      case 'active':
+        response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) + '&status=active&statusActive=active')
+        break;
+      case 'not_available':
+        response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) + '&status=not_available')
+        break;
+      case 'backup':
+        response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) + '&statusActive=backup')
+        break;
+      default:
+        response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) )
+        break;
+    }
+    
     const data = await response.json()
 
     const { code, content } = data
@@ -158,12 +193,20 @@ export default function AccountsPage() {
     dispatch({'type': actionType.updatePage, payload: state.currentPage})
   }
 
+  const changedStatus = (status) => {
+    // console.log(status, 'status')
+    state.currentPage = 1
+    dispatch({'type': actionType.changeStatus, 'payload': status})
+    dispatch({'type': actionType.updatePage, payload: state.currentPage})
+    
+  }
+
   
   const getAccountSummary = async () => {
     let params = {
       "offset": 0,
       "limit": 25,
-      "status": 'active',
+      // "status": 'active',
       // "statusActive": 'active',
     }
     let response = await fetch('/api/Account?act=account-summary', {
@@ -195,7 +238,7 @@ export default function AccountsPage() {
     }
     getAccount()
     // getAccountList()
-  }, [state.platformFilter])
+  }, [state.platformFilter, state.statusFilter])
 
   return (
     <>
@@ -345,22 +388,39 @@ export default function AccountsPage() {
           <div>
           <h1 className='text-2xl font-semibold my-1 mx-3'>Account List</h1>
           {/* selected menu */}
-          <div className='flex flex-wrap gap-2 mx-3'>
-            <Select onValueChange={changedPlatform}>
-                <SelectTrigger className="w-auto mt-4">
-                  <SelectValue/>
-                </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem>All platform</SelectItem> 
-                    <SelectItem value='facebook' key='facebook'>Facebook</SelectItem>
-                    <SelectItem value='instagram' key='instagram'>Instagram</SelectItem>
-                    <SelectItem value='twitter' key='twitter'>Twitter</SelectItem>
-                    <SelectItem value='tiktok' key='tiktok'>Tiktok</SelectItem>
-                    <SelectItem value='kompas' key='kompas'>Kompas</SelectItem>
-                    <SelectItem value='detik' key='detik'>Detik</SelectItem>
-                </SelectContent>
-            </Select>
+          {/* Platform */}
+          <div className='flex gap-1'>
+            <div className='flex flex-wrap gap-2 mx-3'>
+              <Select onValueChange={changedPlatform}>
+                  <SelectTrigger className="w-auto mt-4">
+                    <SelectValue/>
+                  </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem>All platform</SelectItem> 
+                      <SelectItem value='facebook' key='facebook'>Facebook</SelectItem>
+                      <SelectItem value='instagram' key='instagram'>Instagram</SelectItem>
+                      <SelectItem value='twitter' key='twitter'>Twitter</SelectItem>
+                      <SelectItem value='tiktok' key='tiktok'>Tiktok</SelectItem>
+                      <SelectItem value='kompas' key='kompas'>Kompas</SelectItem>
+                      <SelectItem value='detik' key='detik'>Detik</SelectItem>
+                  </SelectContent>
+              </Select>
             </div>
+            <div>
+                {/* Status */}
+                <Select onValueChange={changedStatus}>
+                  <SelectTrigger className="w-auto mt-4">
+                    <SelectValue/>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem>All Status</SelectItem> 
+                    <SelectItem value='active' key='active'>Active</SelectItem>
+                    <SelectItem value='backup' key='backup'>Backup</SelectItem>
+                    <SelectItem value='not_available' key='not_available'>Banned</SelectItem>
+                  </SelectContent>
+                </Select>
+            </div>
+          </div>
           </div>
           {/* Total Account */}
           <div className='flex justify-between'>
@@ -406,7 +466,7 @@ export default function AccountsPage() {
           </div>
           {/* Table Account */}
             {
-              state.account && state.account > 0 ?
+              state.account ?
               <>
             <div className='rounded-md border mx-4 my-5'>
               <Table className="bg-secondary rounded-sm">
@@ -424,6 +484,23 @@ export default function AccountsPage() {
                     state.account.map((value, index) => {
                       // console.log(value, 'vass')
                       // const nameWithProfilePicture = <div className='flex gap-1'><img src={`/media-profile/${value?.profilePicture}`} width={20} height={20} alt={value.name} />{value.name}</div>
+                      // console.log(value.statusActive)
+                      let valueActive = ''
+                      switch(value.statusActive){
+                        case 'backup':
+                          valueActive = <Badge variant="warning">Backup</Badge>
+                          break;
+                        case 'not_available':
+                          valueActive = <Badge variant="danger">Banned</Badge>
+                          break;
+                        case 'active':
+                            valueActive = <Badge variant="success">Active</Badge>
+                            break;
+                        default:
+                          valueActive = <Badge>Active</Badge>
+                          break;
+                      }
+
                       return (
                         <>
                           {
@@ -435,7 +512,8 @@ export default function AccountsPage() {
                             {/* <TableCell>{value.userId ? value.userId : "-"}</TableCell> */}
                             <TableCell>{value.id ? value.id : " "}</TableCell>
                             {/* <TableCell>{value.username ? value.username : " "}</TableCell> */}
-                            <TableCell>{value.statusActive ? value.statusActive : " "}</TableCell>
+                            {/* <TableCell>{value.statusActive ? value.statusActive : " "}</TableCell> */}
+                            <TableCell>{valueActive ? <div className='mx-3'>{valueActive}</div> : " "}</TableCell>
                             <TableCell>{value.platform ? value.platform : " "}</TableCell>
                             <TableCell>{value.lastActivity? moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm') : "-"}</TableCell>
                           </TableRow>
@@ -453,7 +531,7 @@ export default function AccountsPage() {
               :
             <>
             {
-              state.account && state.totalAccount === 0 ?
+               state.totalAccount === 0 ?
               <div className='flex justify-center mx-3'>Data is not available</div>
               :
               <>

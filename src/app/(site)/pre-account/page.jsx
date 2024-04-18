@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Badge } from "@/components/ui/badge"
 import { Button } from '@/components/ui/button'
 import moment from 'moment'
-// import Pagination from '@/components/utilities/Pagination'
+import Pagination from '@/components/utilities/Pagination'
 import { Label } from '@radix-ui/react-label'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
@@ -29,7 +29,7 @@ import { useSession } from 'next-auth/react'
 export default function PreaccountPage(){
   const [preAccount, setPreAccount] = useState({})
   const [countAccount, setCountAccount] = useState(0)
-  const [limit, setLimit] = useState(9999)
+  const [limit, setLimit] = useState(20)
   const [currentPage, setPage] = useState(1)
   const [deleteParams, setDeleteParams] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -1654,9 +1654,9 @@ export default function PreaccountPage(){
                   </TableBody>
                 </Table>
               </div>
-              {/* <div className='flex justify-end mt-4 mx-4'>
-                <Pagination length={preAccount.length} limit={limit} page={currentPage} callback={getPreaccountInfo} />
-              </div> */}
+              <div className='flex justify-end mt-4 mx-4'>
+                <Pagination length={countAccount} limit={limit} page={currentPage} callback={getPreaccountInfo} />
+              </div>
                 </>
                 :
                 <>
