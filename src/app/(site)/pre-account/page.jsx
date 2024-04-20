@@ -1,6 +1,7 @@
 'use client'
 
 import React, {useState, useEffect} from 'react'
+import Image from 'next/image'
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -681,6 +682,7 @@ export default function PreaccountPage(){
                       <TableHead className="text-secondary">Status</TableHead>
                       <TableHead className="text-secondary">Status Activity</TableHead>
                       <TableHead className="text-secondary">Last Activity</TableHead>
+                      <TableHead className="text-secondary">Platform Active</TableHead>
                       <TableHead className="text-secondary">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -689,6 +691,7 @@ export default function PreaccountPage(){
                       // console.log(preAccount, 'sss')
                       preAccount.map((value, index) => {
                         // console.log('getVall:', value)
+                        const platformActive =  value.platformLogin.find(v => v.status === 1) 
                         // setDeleteParams(value.email)
                         let countStatus = 0
                         for (const objCount of value.platformLogin) {
@@ -717,6 +720,7 @@ export default function PreaccountPage(){
                                 <TableCell>{value.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
                                 <TableCell><div className=''>{value.statusActivity}</div></TableCell>
                                 <TableCell>{moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
+                                <TableCell><div className='' style={{'margin' : '2.78rem'}}></div></TableCell>
                                 <TableCell>
                                   <div className='flex gap-1'>
                                     {/* View PreAccount */}
@@ -1186,6 +1190,9 @@ export default function PreaccountPage(){
                                 <TableCell>{value.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
                                 <TableCell><div className=''>{value.statusActivity}</div></TableCell>
                                 <TableCell>{moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
+                                {
+                                  platformActive ? <div style={{'margin' : '2.6rem'}}><Image src={`/socmed/${platformActive.platform}.svg`} width="40" height="40" alt='' className=' rounded-full'/></div> : ''
+                                }
                                 <TableCell>
                                   <div className='flex gap-1'>
                                     {/* View PreAccount */}
