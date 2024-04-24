@@ -29,6 +29,9 @@ export async function GET(req) {
     case 'media-profile':
       path = "Media/getProfilePicture"
       break;
+    case 'account-summary-detailed':
+      path = 'Account/getAccountSummaryDetailed'
+      break;
     default:
       path = ''
   }
@@ -102,6 +105,9 @@ export async function POST(req) {
     case 'account-summary':
       path = "Account/getAccountSummary"
       break;
+      case 'account-summary-detailed':
+        path = 'Account/getAccountSummaryDetailed'
+        break;
     default:
       path = ''
   }

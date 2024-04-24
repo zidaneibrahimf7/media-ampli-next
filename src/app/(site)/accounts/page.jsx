@@ -83,6 +83,7 @@ const initialState = {
 export default function AccountsPage() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [accountSummary, setAccountSummary] = useState({})
+  const [accountSummaryDetailed, setAccountSummaryDetailed] = useState({})
 
   const {data: session, status} = useSession()
 
@@ -229,12 +230,32 @@ export default function AccountsPage() {
     }
   }
 
-  
+  const getAccountSummaryDetailed = async () => {
+    let params = {}
+
+    let response = await fetch('/api/Account?act=account-summary-detailed', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'default',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params), 
+    })
+
+    const data = await response?.json()
+    // console.log(data, 'datss')
+    const { code, content } = data
+    // console.log(code, content)
+    if(code === 0) setAccountSummaryDetailed(content)
+
+  }
 
 
   useEffect(() => {
     if(!state.platformFilter) {
-      getAccountSummary()
+      // getAccountSummary()
+      getAccountSummaryDetailed()
     }
     getAccount()
     // getAccountList()
@@ -247,139 +268,384 @@ export default function AccountsPage() {
         status === 'authenticated' ?
         <>
         <section className='bg-white rounded rounded-lg m-4 shadow-xl'>
-          <div className='p-10 flex gap-2'>
-            <Users size={50} className='' />
-            <div className='mx-3 px-3 flex-none w-64'>
-              <h3 className='font-normal text-2xl'>Total Account</h3>
-              {
-                accountSummary.total ? 
-                <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.total}</h3>
-                :
-                (
-                  accountSummary && accountSummary.total === 0 ?
-                  <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
-                  </>
-                  :
-                  <>
-                  <div className='font-semibold text-4xl pt-1 mt-1 loader-mini'></div>
-                  </>
-                )
-              }
+          <div className='p-6 grid grid-cols-8 gap-4'>
+            <div className='col-span-2 grid grid-cols-3' name="totalAccount">
+              <div className='col-span-1 py-14 px-5'>
+                <Users size={80} className='' />
+              </div>
+              <div className='col-span-2'>
+                <div className='grid grid-cols-2 grid-rows-2 py-4'>
+                  <div className='text-center col-span-2'>
+                    <Badge variant="">Total Account</Badge>
+                    {
+                      typeof accountSummaryDetailed?.total === 'number' ?
+                      <><h5 className='font-bold text-2xl'>{accountSummaryDetailed.total > 0 ? accountSummaryDetailed.total : 0}</h5> </>
+                      :
+                      <div className='px-28 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="success">Active</Badge>
+                    {
+                      typeof accountSummaryDetailed.total_active ?
+                      <><h5 className='font-bold text-2xl'>{accountSummaryDetailed.total_active > 0 ? accountSummaryDetailed.total_active : 0}</h5></>
+                      :
+                      <div className='px-14'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="secondary">Backup</Badge>
+                    {
+                      typeof accountSummaryDetailed.total_inactive ?
+                      <><h5 className='font-bold text-2xl'>{accountSummaryDetailed.total_backup > 0 ? accountSummaryDetailed.total_backup : 0}</h5></>
+                      :
+                      <div className='px-14'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="warning">Inactive</Badge>
+                    {
+                      typeof accountSummaryDetailed.total_banned ?
+                      <><h5 className='font-bold text-2xl'>{accountSummaryDetailed.total_inactive > 0 ? accountSummaryDetailed.total_inactive : 0}</h5></>
+                      :
+                      <div className='px-14'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="danger">Banned</Badge>
+                    {
+                      typeof accountSummaryDetailed.total_backup ?
+                      <><h5 className='font-bold text-2xl'>{accountSummaryDetailed.total_banned > 0 ? accountSummaryDetailed.total_banned : 0}</h5></>
+                      :
+                      <div className='px-14'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex-none w-44'>
-              {/* <h3 className='font-normal text-2xl'>Facebook</h3> */}
-              <Image src="/socmed/facebook.png" width="40" height="40" alt='facebook' className='ml-1 text-center justify-center align-center' />
-              {
-                accountSummary.facebook ? 
-                <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.facebook}</h3>
-                :
-                (
-                  accountSummary && accountSummary.facebook === 0 ?
-                  <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
-                  </>
-                  :
-                  <>
-                  <div className='font-semibold text-4xl pt-1 mt-1 loader-mini'></div>
-                  </>
-                )
-              }
+            <div className='p-2' name="facebook">
+              <div className='grid grid-rows-4 gap-1'>
+                <div className='col-span-2 text-center px-16'><Image src="/socmed/facebook.png" width="50" height="50" alt='facebook' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center'>
+                  <Badge>Total Account</Badge>
+                  {
+                    typeof accountSummaryDetailed?.facebook?.total === 'number' ?
+                    <><h5 className='font-bold text-xl'>{accountSummaryDetailed.facebook.total > 0 ? accountSummaryDetailed.facebook.total : 0}</h5> </>
+                    :
+                    <div className='px-20 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                  }
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant="success">Active</Badge>
+                    {
+                      typeof accountSummaryDetailed?.facebook?.active === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.facebook.active > 0 ? accountSummaryDetailed.facebook.active : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="secondary">Backup</Badge>
+                    {
+                      typeof accountSummaryDetailed?.facebook?.backup === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.facebook.backup > 0 ? accountSummaryDetailed.facebook.backup : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant={'warning'}>Inactive</Badge>
+                    {
+                      typeof accountSummaryDetailed?.facebook?.inactive === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.facebook.inactive > 0 ? accountSummaryDetailed.facebook.inactive : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="danger">Banned</Badge>
+                    {
+                      typeof accountSummaryDetailed?.facebook?.banned === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.facebook.banned > 0 ? accountSummaryDetailed.facebook.banned : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex-none w-44'>
-              {/* <h3 className='font-normal text-2xl'>Twitter</h3> */}
-              <Image src="/socmed/twitter.svg" width="40" height="40" alt='facebook' className='ml-1 text-center justify-center align-center' />
-              {
-                accountSummary.twitter ? 
-                <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.twitter}</h3>
-                :
-                (
-                  accountSummary && accountSummary.twitter === 0 ?
-                  <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
-                  </>
-                  :
-                  <>
-                  <div className='font-semibold text-4xl pt-1 mt-1 loader-mini'></div>
-                  </>
-                )
-              }
+            <div className='p-2' name="twitter">
+              <div className='grid grid-rows-4 gap-1'>
+                <div className='col-span-2 text-center px-16'><Image src="/socmed/twitter.png" width="50" height="50" alt='twitter' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center'>
+                  <Badge>Total Account</Badge>
+                  {
+                    typeof accountSummaryDetailed?.twitter?.total === 'number' ?
+                    <><h5 className='font-bold text-xl'>{accountSummaryDetailed.twitter.total > 0 ? accountSummaryDetailed.twitter.total : 0}</h5> </>
+                    :
+                    <div className='px-20 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                  }
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant="success">Active</Badge>
+                    {
+                      typeof accountSummaryDetailed?.twitter?.active === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.twitter.active > 0 ? accountSummaryDetailed.twitter.active : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="secondary">Backup</Badge>
+                    {
+                      typeof accountSummaryDetailed?.twitter?.backup === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.twitter.backup > 0 ? accountSummaryDetailed.twitter.backup : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant={'warning'}>Inactive</Badge>
+                    {
+                      typeof accountSummaryDetailed?.twitter?.inactive === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.twitter.inactive > 0 ? accountSummaryDetailed.twitter.inactive : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="danger">Banned</Badge>
+                    {
+                      typeof accountSummaryDetailed?.twitter?.banned === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.twitter.banned > 0 ? accountSummaryDetailed.twitter.banned : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex-none w-44'>
-              {/* <h3 className='font-normal text-2xl'>Instagram</h3> */}
-              <Image src="/socmed/instagram.svg" width="40" height="40" alt='facebook' className='ml-1 text-center justify-center align-center' />
-              {
-                accountSummary.tiktok ? 
-                <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.instagram}</h3>
-                :
-                (
-                  accountSummary && accountSummary.instagram === 0 ?
-                  <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
-                  </>
-                  :
-                  <>
-                  <div className='font-semibold text-4xl pt-1 mt-1 loader-mini'></div>
-                  </>
-                )
-              }
+            <div className='p-2' name="instagram">
+              <div className='grid grid-rows-4 gap-1'>
+                <div className='col-span-2 text-center px-16'><Image src="/socmed/instagram.png" width="50" height="50" alt='instagram' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center'>
+                  <Badge>Total Account</Badge>
+                  {
+                    typeof accountSummaryDetailed?.instagram?.total === 'number' ?
+                    <><h5 className='font-bold text-xl'>{accountSummaryDetailed.instagram.total > 0 ? accountSummaryDetailed.instagram.total : 0}</h5> </>
+                    :
+                    <div className='px-20 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                  }
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant="success">Active</Badge>
+                    {
+                      typeof accountSummaryDetailed?.instagram?.active === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.instagram.active > 0 ? accountSummaryDetailed.instagram.active : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="secondary">Backup</Badge>
+                    {
+                      typeof accountSummaryDetailed?.instagram?.backup === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.instagram.backup > 0 ? accountSummaryDetailed.instagram.backup : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant={'warning'}>Inactive</Badge>
+                    {
+                      typeof accountSummaryDetailed?.instagram?.inactive === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.instagram.inactive > 0 ? accountSummaryDetailed.instagram.inactive : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="danger">Banned</Badge>
+                    {
+                      typeof accountSummaryDetailed?.instagram?.banned === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.instagram.banned > 0 ? accountSummaryDetailed.instagram.banned : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex-none w-44'>
-              {/* <h3 className='font-normal text-2xl'>Tiktok</h3> */}
-              <Image src="/socmed/tiktok.svg" width="40" height="40" alt='facebook' className='ml-1 text-center justify-center align-center' />
-              {
-                accountSummary.tiktok ? 
-                <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.tiktok}</h3>
-                :
-                (
-                  accountSummary && accountSummary.tiktok === 0 ?
-                  <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
-                  </>
-                  :
-                  <>
-                  <div className='font-semibold text-4xl pt-1 mt-1 loader-mini'></div>
-                  </>
-                )
-              }
+            <div className='p-2' name="tiktok">
+              <div className='grid grid-rows-4 gap-1'>
+                <div className='col-span-2 text-center px-16'><Image src="/socmed/tiktok.png" width="50" height="50" alt='tiktok' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center'>
+                  <Badge>Total Account</Badge>
+                  {
+                    typeof accountSummaryDetailed?.tiktok?.total === 'number' ?
+                    <><h5 className='font-bold text-xl'>{accountSummaryDetailed.tiktok.total > 0 ? accountSummaryDetailed.tiktok.total : 0}</h5> </>
+                    :
+                    <div className='px-20 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                  }
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant="success">Active</Badge>
+                    {
+                      typeof accountSummaryDetailed?.tiktok?.active === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.tiktok.active > 0 ? accountSummaryDetailed.tiktok.active : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="secondary">Backup</Badge>
+                    {
+                      typeof accountSummaryDetailed?.tiktok?.backup === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.tiktok.backup > 0 ? accountSummaryDetailed.tiktok.backup : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant={'warning'}>Inactive</Badge>
+                    {
+                      typeof accountSummaryDetailed?.tiktok?.inactive === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.tiktok.inactive > 0 ? accountSummaryDetailed.tiktok.inactive : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="danger">Banned</Badge>
+                    {
+                      typeof accountSummaryDetailed?.tiktok?.banned === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.tiktok.banned > 0 ? accountSummaryDetailed.tiktok.banned : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex-none w-44'>
-              {/* <h3 className='font-normal text-2xl'>Kompas</h3> */}
-              <Image src="/socmed/kompas.svg" width="40" height="40" alt='facebook' className='ml-1 text-center justify-center align-center' />
-              {
-                accountSummary.kompas ? 
-                <h3 className='font-semibold text-4xl pt-1 mt-1'>{accountSummary.kompas}</h3>
-                :
-                (
-                  accountSummary && accountSummary.kompas === 0 ?
-                  <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
-                  </>
-                  :
-                  <>
-                  <div className='font-semibold text-4xl pt-1 mt-1 loader-mini'></div>
-                  </>
-                )
-              }
+            <div className='p-2' name="detik">
+              <div className='grid grid-rows-4 gap-1'>
+                <div className='col-span-2 text-center px-16'><Image src="/socmed/detik.png" width="50" height="50" alt='detik' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center'>
+                  <Badge>Total Account</Badge>
+                  {
+                    typeof accountSummaryDetailed?.detik?.total === 'number' ?
+                    <><h5 className='font-bold text-xl'>{accountSummaryDetailed.detik.total > 0 ? accountSummaryDetailed.detik.total : 0}</h5> </>
+                    :
+                    <div className='px-20 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                  }
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant="success">Active</Badge>
+                    {
+                      typeof accountSummaryDetailed?.detik?.active === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.detik.active > 0 ? accountSummaryDetailed.detik.active : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="secondary">Backup</Badge>
+                    {
+                      typeof accountSummaryDetailed?.detik?.backup === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.detik.backup > 0 ? accountSummaryDetailed.detik.backup : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant={'warning'}>Inactive</Badge>
+                    {
+                      typeof accountSummaryDetailed?.detik?.inactive === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.detik.inactive > 0 ? accountSummaryDetailed.detik.inactive : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="danger">Banned</Badge>
+                    {
+                      typeof accountSummaryDetailed?.detik?.banned === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.detik.banned > 0 ? accountSummaryDetailed.detik.banned : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex-none w-44'>
-              {/* <h3 className='font-normal text-2xl'>Detik</h3> */}
-              <Image src="/socmed/detik.svg" width="40" height="45" alt='facebook' className='ml-1 text-center justify-center align-center' />
-              {
-                accountSummary.detik ? 
-                <h3 className='font-semibold text-4xl pt-1 mt-2'>{accountSummary.detik}</h3>
-                :
-                (
-                  accountSummary && accountSummary.detik === 0 ?
-                  <>
-                   <h3 className='font-semibold text-4xl pt-1 mt-1 mx-3'>0</h3>
-                  </>
-                  :
-                  <>
-                  <div className='font-semibold text-4xl pt-1 mt-1 loader-mini'></div>
-                  </>
-                )
-              }
+            <div className='p-2' name="kompas">
+              <div className='grid grid-rows-4 gap-1'>
+                <div className='col-span-2 text-center px-16'><Image src="/socmed/kompas.png" width="50" height="50" alt='kompas' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center'>
+                  <Badge>Total Account</Badge>
+                  {
+                    typeof accountSummaryDetailed?.kompas?.total === 'number' ?
+                    <><h5 className='font-bold text-xl'>{accountSummaryDetailed.kompas.total > 0 ? accountSummaryDetailed.kompas.total : 0}</h5> </>
+                    :
+                    <div className='px-20 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                  }
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant="success">Active</Badge>
+                    {
+                      typeof accountSummaryDetailed?.kompas?.active === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.kompas.active > 0 ? accountSummaryDetailed.kompas.active : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="secondary">Backup</Badge>
+                    {
+                      typeof accountSummaryDetailed?.kompas?.backup === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.kompas.backup > 0 ? accountSummaryDetailed.kompas.backup : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+                <div className='col-span-2 grid grid-cols-2'>
+                  <div className='text-center'>
+                    <Badge variant={'warning'}>Inactive</Badge>
+                    {
+                      typeof accountSummaryDetailed?.kompas?.inactive === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.kompas.inactive > 0 ? accountSummaryDetailed.kompas.inactive : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                  <div className='text-center'>
+                    <Badge variant="danger">Banned</Badge>
+                    {
+                      typeof accountSummaryDetailed?.kompas?.banned === 'number' ?
+                      <><h5 className='font-bold text-xl'>{accountSummaryDetailed.kompas.banned > 0 ? accountSummaryDetailed.kompas.banned : 0}</h5> </>
+                      :
+                      <div className='px-10 mt-1 text-center'><div className='loader-super-mini'></div></div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
