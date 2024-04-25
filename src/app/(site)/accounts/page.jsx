@@ -84,6 +84,7 @@ export default function AccountsPage() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [accountSummary, setAccountSummary] = useState({})
   const [accountSummaryDetailed, setAccountSummaryDetailed] = useState({})
+  const [done, setDone] = useState(false)
 
   const {data: session, status} = useSession()
 
@@ -130,7 +131,7 @@ export default function AccountsPage() {
     // }
 
     let response
-    console.log(state.statusFilter, 'ssss')
+    // console.log(state.statusFilter, 'ssss')
 
     switch(state.statusFilter){
       case 'active':
@@ -140,7 +141,10 @@ export default function AccountsPage() {
         response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) + '&status=not_available')
         break;
       case 'backup':
-        response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) + '&statusActive=backup')
+        response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) + '&status=active&statusActive=backup')
+        break;
+      case 'inactive':
+        response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) + '&status=inactive')
         break;
       default:
         response = await fetch('/api/Account?act=account&offset=' + (state.search ? 0 : offset) + '&limit=' + state.limit + (state.search? '&search=' + state.search : '')  + ((sortValue ? '&sort=' + sortKey + '&sortValue=' + sortValue : '&sort=name&sortValue=1' )) + ((state.platformFilter ? '&platform=' + state.platformFilter: '')) )
@@ -148,7 +152,7 @@ export default function AccountsPage() {
     }
     
     const data = await response.json()
-
+    setDone(true)
     const { code, content } = data
 
     // console.log(content, 'contentt')
@@ -650,219 +654,177 @@ export default function AccountsPage() {
           </div>
         </section>
         <section className='flex w-full justify-center'>
-         <div className='grow w-5 rounded-sm py-3 m-5 text-primary items-center shadow-xl bg-white'>
-          <div>
-          <h1 className='text-2xl font-semibold my-1 mx-3'>Account List</h1>
-          {/* selected menu */}
-          {/* Platform */}
-          <div className='flex gap-1'>
-            <div className='flex flex-wrap gap-2 mx-3'>
-              <Select onValueChange={changedPlatform}>
-                  <SelectTrigger className="w-auto mt-4">
-                    <SelectValue/>
-                  </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem>All platform</SelectItem> 
-                      <SelectItem value='facebook' key='facebook'>Facebook</SelectItem>
-                      <SelectItem value='instagram' key='instagram'>Instagram</SelectItem>
-                      <SelectItem value='twitter' key='twitter'>Twitter</SelectItem>
-                      <SelectItem value='tiktok' key='tiktok'>Tiktok</SelectItem>
-                      <SelectItem value='kompas' key='kompas'>Kompas</SelectItem>
-                      <SelectItem value='detik' key='detik'>Detik</SelectItem>
-                  </SelectContent>
-              </Select>
-            </div>
-            <div>
-                {/* Status */}
-                <Select onValueChange={changedStatus}>
-                  <SelectTrigger className="w-auto mt-4">
-                    <SelectValue/>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem>All Status</SelectItem> 
-                    <SelectItem value='active' key='active'>Active</SelectItem>
-                    <SelectItem value='backup' key='backup'>Backup</SelectItem>
-                    <SelectItem value='not_available' key='not_available'>Banned</SelectItem>
-                  </SelectContent>
-                </Select>
-            </div>
-          </div>
-          </div>
-          {/* Total Account */}
-          <div className='flex justify-between'>
-            {
-              state.totalAccount ?
-              <>
+            <div className='grow w-5 rounded-sm py-3 m-5 text-primary items-center shadow-xl bg-white'>
+              <div>
+              <h1 className='text-2xl font-semibold my-1 mx-3'>Account List</h1>
+              {/* selected menu */}
+              {/* Platform */}
+              <div className='flex gap-1'>
+                <div className='flex flex-wrap gap-2 mx-3'>
+                  <Select onValueChange={changedPlatform}>
+                      <SelectTrigger className="w-auto mt-4">
+                        <SelectValue/>
+                      </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem>All platform</SelectItem> 
+                          <SelectItem value='facebook' key='facebook'>Facebook</SelectItem>
+                          <SelectItem value='instagram' key='instagram'>Instagram</SelectItem>
+                          <SelectItem value='twitter' key='twitter'>Twitter</SelectItem>
+                          <SelectItem value='tiktok' key='tiktok'>Tiktok</SelectItem>
+                          <SelectItem value='kompas' key='kompas'>Kompas</SelectItem>
+                          <SelectItem value='detik' key='detik'>Detik</SelectItem>
+                      </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                    {/* Status */}
+                    <Select onValueChange={changedStatus}>
+                      <SelectTrigger className="w-auto mt-4">
+                        <SelectValue/>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem>All Status</SelectItem> 
+                        <SelectItem value='active' key='active'>Active</SelectItem>
+                        <SelectItem value='backup' key='backup'>Backup</SelectItem>
+                        <SelectItem value='inactive' key='inactive'>Inactive</SelectItem>
+                        <SelectItem value='not_available' key='not_available'>Banned</SelectItem>
+                      </SelectContent>
+                    </Select>
+                </div>
+              </div>
+              </div>
+              {/* Total Account */}
+              <div className='flex justify-between'>
                 {
-                  state.totalAccount === 1 ?
-                    <p className='text-md font-normal mt-3 mx-3'>Total: {state.totalAccount} account</p>
-                    :   
-                    <p className='text-md font-normal mt-3 mx-3'>Total: {state.totalAccount} accounts</p>    
-                }
-              </>
-              :
-              <p className='text-md font-normal mt-3 mx-3'>Total: 0 account</p>
-            }
-            <form className='mx-1'>
-              <Input 
-                type="text"
-                placeholder="search..."
-                onChange={((e) => {
-                  e.preventDefault()
-                  // console.log(e.target.value)
-                  dispatch({'type': actionType.search, 'payload': e.target.value})
-                  getAccount()
-                  if(!e) {
-                    getAccount()
-                  }
-                })}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                      e.preventDefault();
-                      // console.log(e.key, e.target.value)
-                      dispatch({'type': actionType.search, 'payload': e.target.value})
-                      getAccount()
-                      // dispatch({'type': actionType.updatePage, payload: state.currentPage})
-                  }
-                }}
-                className="mr-3 border border-primary"
-                style={{'width' : '10rem'}}
-              />
-            </form>
-          </div>
-          {/* Table Account */}
-            {
-              state.account ?
-              <>
-            <div className='rounded-md border mx-4 my-5'>
-              <Table className="bg-secondary rounded-sm">
-                <TableHeader className="text-center items-center bg-primary">
-                  <TableRow>
-                    <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('name')}>Name {sortKeyValueAccount === 'name' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
-                    <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('id')}>User ID {sortKeyValueAccount === 'id' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
-                    <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('statusActive')}>Status {sortKeyValueAccount === 'statusActive' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
-                    <TableHead className="text-secondary">Platform</TableHead>
-                    <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('lastActivity')}>Last Activity {sortKeyValueAccount === 'lastActivity' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {
-                    state.account.map((value, index) => {
-                      // console.log(value, 'vass')
-                      // const nameWithProfilePicture = <div className='flex gap-1'><img src={`/media-profile/${value?.profilePicture}`} width={20} height={20} alt={value.name} />{value.name}</div>
-                      // console.log(value.statusActive)
-                      let valueActive = ''
-                      switch(value.statusActive){
-                        case 'backup':
-                          valueActive = <Badge variant="warning">Backup</Badge>
-                          break;
-                        case 'not_available':
-                          valueActive = <Badge variant="danger">Banned</Badge>
-                          break;
-                        case 'active':
-                            valueActive = <Badge variant="success">Active</Badge>
-                            break;
-                        default:
-                          valueActive = <Badge>Active</Badge>
-                          break;
-                      }
-
-                      return (
-                        <>
-                          {
-
-                          }
-                          <TableRow className="hover:bg-white" key={index}>
-                            {/* <TableCell>{nameWithProfilePicture}</TableCell> */}
-                            <TableCell>{value.name}</TableCell>
-                            {/* <TableCell>{value.userId ? value.userId : "-"}</TableCell> */}
-                            <TableCell>{value.id ? value.id : " "}</TableCell>
-                            {/* <TableCell>{value.username ? value.username : " "}</TableCell> */}
-                            {/* <TableCell>{value.statusActive ? value.statusActive : " "}</TableCell> */}
-                            <TableCell>{valueActive ? <div className='mx-3'>{valueActive}</div> : " "}</TableCell>
-                            <TableCell>{value.platform ? value.platform : " "}</TableCell>
-                            <TableCell>{value.lastActivity? moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm') : "-"}</TableCell>
-                          </TableRow>
-                        </>
-                      )
-                    })
-                  }
-                </TableBody>
-              </Table>
-            </div>
-            <div className='flex justify-end mt-3 mx-4'>
-              <Pagination length={state.totalAccount} limit={state.limit} page={state.currentPage} callback={(pageNumber) => getAccount(pageNumber, (sortKeyValueAccount ? sortKeyValueAccount : 'name'), valueSortAccount)} />
-            </div>
-            </>
-              :
-            <>
-            {
-               state.totalAccount === 0 ?
-              <div className='flex justify-center mx-3'>Data is not available</div>
-              :
-              <>
-               <div className='flex justify-center mx-3'><Loading /></div>
-              </>
-            }
-            </>
-            }
-        </div>
-         {/* <div className='grow w-5 rounded-sm py-3 m-5 text-primary items-center shadow-xl bg-white'>
-          <div>
-            <h1 className='text-2xl font-semibold my-5 mx-3'>Running Task</h1>
-            <div className='flex flex-wrap gap-2 mx-3'>
-            <Select onValueChange={changedPlatformRunningTask}>
-                <SelectTrigger className="w-auto mt-4">
-                  <SelectValue/>
-                </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem>All platform</SelectItem> 
-                    <SelectItem value='facebook' key='facebook'>Facebook</SelectItem>
-                    <SelectItem value='instagram' key='instagram'>Instagram</SelectItem>
-                    <SelectItem value='twitter' key='twitter'>Twitter</SelectItem>
-                    <SelectItem value='tiktok' key='tiktok'>Tiktok</SelectItem>
-                    <SelectItem value='kompas' key='kompas'>Kompas</SelectItem>
-                    <SelectItem value='detik' key='detik'>Detik</SelectItem>
-                </SelectContent>
-            </Select>
-            </div>
-          </div>
-          <div>
-            {
-              state.totalAccountRunningTask > 1 ?
-              <p className='text-md font-normal mt-3 mx-3'>Total: {state.totalAccountRunningTask} accounts</p>
-              :
-              <p className='text-md font-normal mt-3 mx-3'>Total: {state.totalAccountRunningTask} account</p>
-            }
-          </div>
-          <div className='rounded-md border mx-4 my-5'>
-            <Table className="bg-secondary rounded-sm">
-              <TableHeader className="text-center items-center bg-primary">
-                <TableRow>
-                    <TableHead className="text-secondary">Task Name</TableHead>
-                    <TableHead className="text-secondary">Platform</TableHead>
-                    <TableHead className="text-secondary">Project Name</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {
-                  state.runningTask && state.runningTask.length > 0 ?
+                  state.totalAccount ?
                   <>
-                  <TableRow>
-                    <TableCell></TableCell>
-                  </TableRow>
+                    {
+                      state.totalAccount === 1 ?
+                        <p className='text-md font-normal mt-3 mx-3'>Total: {state.totalAccount} account</p>
+                        :   
+                        <p className='text-md font-normal mt-3 mx-3'>Total: {state.totalAccount} accounts</p>    
+                    }
                   </>
                   :
-                  <TableRow>
-                    <TableCell className='text-center'></TableCell> 
-                    <TableCell className='text-center'>Data is not available</TableCell> 
-                    <TableCell className='text-center'></TableCell> 
-                  </TableRow>
+                  <p className='text-md font-normal mt-3 mx-3'>Total: 0 account</p>
                 }
-              </TableBody>
-            </Table>
-          </div>
-        </div> */}
+                <form className='mx-1'>
+                  <Input 
+                    type="text"
+                    placeholder="search..."
+                    onChange={((e) => {
+                      e.preventDefault()
+                      // console.log(e.target.value)
+                      dispatch({'type': actionType.search, 'payload': e.target.value})
+                      getAccount()
+                      if(!e) {
+                        getAccount()
+                      }
+                    })}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                          e.preventDefault();
+                          // console.log(e.key, e.target.value)
+                          dispatch({'type': actionType.search, 'payload': e.target.value})
+                          getAccount()
+                          // dispatch({'type': actionType.updatePage, payload: state.currentPage})
+                      }
+                    }}
+                    className="mr-3 border border-primary"
+                    style={{'width' : '10rem'}}
+                  />
+                </form>
+              </div>
+              {/* Table Account */}
+              {
+                      done ?
+                      <>
+                        {
+                          state.account.length ?
+                          <>
+                        <div className='rounded-md border mx-4 my-5'>
+                          <Table className="bg-secondary rounded-sm">
+                            <TableHeader className="text-center items-center bg-primary">
+                              <TableRow>
+                                <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('name')}>Name {sortKeyValueAccount === 'name' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                                <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('id')}>User ID {sortKeyValueAccount === 'id' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                                <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('statusActive')}>Status {sortKeyValueAccount === 'statusActive' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                                <TableHead className="text-secondary">Platform</TableHead>
+                                <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('lastActivity')}>Last Activity {sortKeyValueAccount === 'lastActivity' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {
+                                state.account.map((value, index) => {
+                                  // console.log(value, 'vass')
+                                  // const nameWithProfilePicture = <div className='flex gap-1'><img src={`/media-profile/${value?.profilePicture}`} width={20} height={20} alt={value.name} />{value.name}</div>
+                                  // console.log(value.statusActive)
+                                  let valueActive = ''
+                                  // let valueStatusActive = ''
+                                  switch(value.status){
+                                    case 'active':
+                                        // valueActive = <Badge variant="success">Active</Badge>
+                                        switch(valueActive.statusActive){
+                                          case 'active':
+                                            valueActive = <Badge variant="success">Active</Badge>
+                                            break;
+                                          case 'backup':
+                                            valueActive = <Badge variant="success">Active</Badge>
+                                            break;
+                                        }
+                                        break;
+                                    // case 'backup':
+                                    //     valueActive = <Badge variant="secondary">Backup</Badge>
+                                    //     break;
+                                    case 'inactive':
+                                        valueActive = <Badge variant="warning">Inactive</Badge>
+                                        break;
+                                    case 'not_available':
+                                        valueActive = <Badge variant="danger">Banned</Badge>
+                                        break;
+                                    default:
+                                      valueActive = <Badge>No Status</Badge>
+                                      break;
+                                  }
+        
+                                  return (
+                                    <>
+                                      {
+        
+                                      }
+                                      <TableRow className="hover:bg-white" key={index}>
+                                        {/* <TableCell>{nameWithProfilePicture}</TableCell> */}
+                                        <TableCell>{value.name}</TableCell>
+                                        {/* <TableCell>{value.userId ? value.userId : "-"}</TableCell> */}
+                                        <TableCell>{value.id ? value.id : " "}</TableCell>
+                                        {/* <TableCell>{value.username ? value.username : " "}</TableCell> */}
+                                        {/* <TableCell>{value.statusActive ? value.statusActive : " "}</TableCell> */}
+                                        <TableCell>{valueActive ? <div className='mx-3'>{valueActive}</div> : " "}</TableCell>
+                                        <TableCell>{value.platform ? value.platform : " "}</TableCell>
+                                        <TableCell>{value.lastActivity? moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm') : "-"}</TableCell>
+                                      </TableRow>
+                                    </>
+                                  )
+                                })
+                              }
+                            </TableBody>
+                          </Table>
+                        </div>
+                        <div className='flex justify-end mt-3 mx-4'>
+                          <Pagination length={state.totalAccount} limit={state.limit} page={state.currentPage} callback={(pageNumber) => getAccount(pageNumber, (sortKeyValueAccount ? sortKeyValueAccount : 'name'), valueSortAccount)} />
+                        </div>
+                        </>
+                          :
+                        <>
+                        <div className='flex justify-center mx-3'>Data is not available</div>
+                        </>
+                        }
+                      </>
+                      :
+                      <div className='flex justify-center mx-3'><Loading /></div> 
+                    }
+            </div>
+            {/* <div className='flex justify-center mx-3'><Loading /></div> */}
         </section>
         </>
         :
