@@ -155,7 +155,7 @@ export default function AccountsPage() {
     setDone(true)
     const { code, content } = data
 
-    // console.log(content, 'contentt')
+    console.log(content, 'contentt')
 
     dispatch({'type': actionType.account, 'payload': content.results})
     dispatch({'type': actionType.totalAccount, payload: content.count})
@@ -757,7 +757,8 @@ export default function AccountsPage() {
                               {
                                 state.account.map((value, index) => {
                                   // console.log(value, 'vass')
-                                  // const nameWithProfilePicture = <div className='flex gap-1'><img src={`/media-profile/${value?.profilePicture}`} width={20} height={20} alt={value.name} />{value.name}</div>
+
+                                  const nameWithProfilePicture = <div className='relative' style={{'height' : '20px', 'width' : '20px'}}><Image src={`/api/Media/photoProfile/${value.profilePicture}`} layout='fill' objectFit='cover' /></div>
                                   // console.log(value.statusActive)
                                   let valueActive = ''
                                   // let valueStatusActive = ''
@@ -794,7 +795,7 @@ export default function AccountsPage() {
                                       }
                                       <TableRow className="hover:bg-white" key={index}>
                                         {/* <TableCell>{nameWithProfilePicture}</TableCell> */}
-                                        <TableCell>{value.name}</TableCell>
+                                        <TableCell><div className='flex gap-2'>{nameWithProfilePicture}{value.name}</div></TableCell>
                                         {/* <TableCell>{value.userId ? value.userId : "-"}</TableCell> */}
                                         <TableCell>{value.id ? value.id : " "}</TableCell>
                                         {/* <TableCell>{value.username ? value.username : " "}</TableCell> */}

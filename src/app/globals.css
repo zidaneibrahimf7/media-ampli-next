@@ -53,9 +53,10 @@
     --warning: 42.07 78.63% 54.12%;
     --warning-hover: 40 100% 38%;
 
-    --backgroundCell: 218.57 10.61% 74.12%
+    --backgroundCell: 218.57 10.61% 74.12%;
 
-
+    --backgroundPc: 211 35% 34%
+    
   }
  
   .dark {

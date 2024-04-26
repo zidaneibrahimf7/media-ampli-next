@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link'
 import { useSession } from 'next-auth/react';
 
-import { CircleUser, UserRoundCog, MonitorSmartphone, DiscAlbum} from 'lucide-react'
+import { CircleUser, UserRoundCog, MonitorSmartphone, DiscAlbum, Computer} from 'lucide-react'
 
 export default function NavbarComponents() {
   const {data: session, status} = useSession()
@@ -34,14 +34,21 @@ export default function NavbarComponents() {
       label: 'Device',
       link: '/device',
       icon: <MonitorSmartphone size={20} />,
-      hidden: isOperator,
+      // hidden: isOperator,
     },
     {
       id: 4,
       label: 'Platform',
       link: '/platform',
       icon: <DiscAlbum size={20} />,
-      hidden: isOperator,
+      // hidden: isOperator,
+    },
+    {
+      id: 5,
+      label: 'PC-List',
+      link: '/minipc',
+      icon: <Computer size={20} />,
+      // hidden: isOperator,
     },
   ];
 

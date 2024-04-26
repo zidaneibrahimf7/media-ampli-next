@@ -20,6 +20,21 @@ export async function GET(req) {
     case 'maintenances':
       path = "device/setMaintenance"
       break;
+    case 'minipc':
+      path = 'MiniPc/getListMiniPc'
+      break;
+    case 'add-minipc' :
+        path = 'MiniPc/insertMiniPc'
+        break;
+    case 'update-minipc':
+        path = 'MiniPc/updateMiniPc'
+        break;
+    case 'delete-minipc':
+        path = 'MiniPc/deleteMiniPc'
+        break;
+    case 'getMiniPcDevice':
+        path= "MiniPc/getMiniPcDevice"
+        break;
     default:
       path = ''
   }
@@ -81,8 +96,24 @@ export async function POST(req) {
     case 'maintenances':
       path = "device/setMaintenance"
       break;
+    case 'minipc':
+      path = 'MiniPc/getListMiniPc'
+      break;
+    case 'add-minipc' :
+      path = 'MiniPc/insertMiniPc'
+      break;
+    case 'update-minipc':
+      path = 'MiniPc/updateMiniPc'
+      break;
+    case 'delete-minipc':
+      path = 'MiniPc/deleteMiniPc'
+      break;
+    case 'getMiniPcDevice':
+      path= "MiniPc/getMiniPcDevice"
+      break;
     default:
       path = ''
+      break;
   }
 
 //    console.log(path, 'pathhs')

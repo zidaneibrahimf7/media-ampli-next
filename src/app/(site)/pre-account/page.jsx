@@ -679,10 +679,10 @@ export default function PreaccountPage(){
                       <TableHead className="text-secondary">Date Create</TableHead>
                       <TableHead className="text-secondary">Email</TableHead>
                       <TableHead className="text-secondary">Backup Code</TableHead>
-                      <TableHead className="text-secondary">Status</TableHead>
+                      <TableHead className="text-secondary px-5">Status</TableHead>
                       <TableHead className="text-secondary">Status Activity</TableHead>
                       <TableHead className="text-secondary">Last Activity</TableHead>
-                      <TableHead className="text-secondary">Platform Active</TableHead>
+                      <TableHead className="text-secondary px-20">Platform Active</TableHead>
                       <TableHead className="text-secondary">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -691,7 +691,22 @@ export default function PreaccountPage(){
                       // console.log(preAccount, 'sss')
                       preAccount.map((value, index) => {
                         // console.log('getVall:', value)
-                        const platformActive =  value.platformLogin.find(v => v.status === 1) 
+                        const platformActive =  value.platformLogin.map((platform) => {
+                          if(platform.status === 1) {
+                            return (
+                                <div className='relative col-span-1' style={{'width' : '35px', 'height' : '35px'}} key={platform._id}>
+                                  <Image
+                                      src={`/socmed/${platform.platform}.svg`}
+                                      layout='fill'
+                                      alt=''
+                                      className='rounded-full col-span-3'
+                                  />
+                                </div>
+                            )
+                          } else {
+                            return ''
+                          }
+                        })
                         // setDeleteParams(value.email)
                         let countStatus = 0
                         for (const objCount of value.platformLogin) {
@@ -718,7 +733,7 @@ export default function PreaccountPage(){
                                 <TableCell>{value.email}</TableCell>
                                 <TableCell>{backupCodeList}</TableCell>
                                 <TableCell>{value.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
-                                <TableCell><div className=''>{value.statusActivity}</div></TableCell>
+                                <TableCell><div className='px-12'>{value.statusActivity}</div></TableCell>
                                 <TableCell>{moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
                                 <TableCell><div className='' style={{'margin' : '2.78rem'}}></div></TableCell>
                                 <TableCell>
@@ -1188,10 +1203,10 @@ export default function PreaccountPage(){
                                 <TableCell>{value.email}</TableCell>
                                 <TableCell>{backupCodeList}</TableCell>
                                 <TableCell>{value.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
-                                <TableCell><div className=''>{value.statusActivity}</div></TableCell>
+                                <TableCell><div className='px-12'>{value.statusActivity}</div></TableCell>
                                 <TableCell>{moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
                                 {
-                                  platformActive ? <div style={{'margin' : '2.6rem'}}><Image src={`/socmed/${platformActive.platform}.svg`} width="40" height="40" alt='' className=' rounded-full'/></div> : ''
+                                  platformActive ? <TableCell>  <div className='grid grid-cols-6 pl-2'>{platformActive}</div></TableCell> : ''
                                 }
                                 <TableCell>
                                   <div className='flex gap-1'>

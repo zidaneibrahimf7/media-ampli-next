@@ -69,6 +69,9 @@ module.exports = {
         },
         backgroundCell: {
           DEFAULT: "hsl(var(--backgroundCell))"
+        },
+        backgroundPc: {
+          DEFAULT: "hsl(var(--backgroundPc))"
         }
       },
       borderRadius: {
