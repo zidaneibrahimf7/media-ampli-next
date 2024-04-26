@@ -52,6 +52,7 @@ export default function Minipc() {
   const [done, setDone] = useState(false)
   const [miniPcDevice, setMiniPcDevice] = useState({})
   const [countMiniPcDevice, setCountMinipcDevice] = useState('')
+  const [doneDevice, setDoneDevice] = useState(false)
   
   const getListMiniPc = async () => {
     let params = {
@@ -60,25 +61,30 @@ export default function Minipc() {
       search: "1"
     }
 
-    let response = await fetch('/api/Device?act=minipc', {
-      method: "POST",
-      mode: 'cors',
-      cache: 'default',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(params)
-    })
-
-    const data = await response.json()
-    // console.log(data, 'da')
-    const { code, content, message} = data
-    setDone(true)
-
-    if(code === 0) {
-      setMinipc(content.results)
-      setCountMinipc(content.count)
+    try {
+      let response = await fetch('/api/Device?act=minipc', {
+        method: "POST",
+        mode: 'cors',
+        cache: 'default',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      })
+  
+      const data = await response.json()
+      // console.log(data, 'da')
+      const { code, content, message} = data
+      setDone(true)
+  
+      if(code === 0) {
+        setMinipc(content.results)
+        setCountMinipc(content.count)
+      }
+    } catch (err) {
+      console.log('error message:::', err)
     }
+
   }
 
   const handleGetMiniPcDevice = async (miniPcId) => {
@@ -102,6 +108,7 @@ export default function Minipc() {
   
       const data = await response.json()
       // console.log(data, 'asdasda')
+      setDoneDevice(true)
       let {code, content, message} = data
   
       if(code === 0) {
@@ -451,60 +458,69 @@ export default function Minipc() {
                               <p>Port: {v.port}</p>
                               <p>{v.deviceCount > 1 ? <>Total {v.deviceCount} devices</> : <>Total: {v.deviceCount} device</>}</p>
                               <div className='rounded-md border'>
-                              <Table 
-                              className="bg-secondary rounded-sm" 
-                              containerClassname="h-fit max-h-80 overflow-y-auto relative"
-                              >
-                                <TableHeader className="items-center bg-primary">
-                                  <TableRow>
-                                    <TableHead className="w-[100px] text-secondary">Device ID</TableHead>
-                                    <TableHead className="w-[100px] text-secondary">IP</TableHead>
-                                    <TableHead className="w-[100px] text-secondary">Port</TableHead>
-                                    <TableHead className="w-[100px] text-secondary">Status</TableHead>
-                                  </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                 
-                                    {
-                                      miniPcDevice.length && countMiniPcDevice > 0 ?
-                                      <>
-                                      {
-                                        miniPcDevice.map((v, i) => {
-                                          // console.log(v, i, 'ss') 
-                                          let statusDevice = ''
-                                          if(v.status === 'error' || v.status === 'timeout') {
-                                            statusDevice = 'danger/50'
-                                          } else if (v.status === 'maintenance') {
-                                            statusDevice = 'yellow-200'
-                                          }
-                                          return (
+                                {
+                                  doneDevice ?
+                                  <>
+                                    <Table 
+                                    className="bg-secondary rounded-sm" 
+                                    containerClassname="h-fit max-h-80 overflow-y-auto relative"
+                                    >
+                                      <TableHeader className="items-center bg-primary">
+                                        <TableRow>
+                                          <TableHead className="w-[100px] text-secondary">Device ID</TableHead>
+                                          <TableHead className="w-[100px] text-secondary">IP</TableHead>
+                                          <TableHead className="w-[100px] text-secondary">Port</TableHead>
+                                          <TableHead className="w-[100px] text-secondary">Status</TableHead>
+                                        </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                      
+                                          {
+                                            miniPcDevice.length && countMiniPcDevice > 0 ?
                                             <>
-                                             <TableRow className={`bg-${statusDevice}`}>
-                                              <TableCell className="font-medium">{v.deviceId}</TableCell>
-                                              <TableCell>{v.ipAddress}</TableCell>
-                                              <TableCell>{v.port}</TableCell>
-                                              <TableCell>{v.status}</TableCell>
-                                              </TableRow>
+                                            {
+                                              miniPcDevice.map((v, i) => {
+                                                // console.log(v, i, 'ss') 
+                                                let statusDevice = ''
+                                                if(v.status === 'error' || v.status === 'timeout') {
+                                                  statusDevice = 'danger/50'
+                                                } else if (v.status === 'maintenance') {
+                                                  statusDevice = 'warningCol'
+                                                }
+                                                return (
+                                                  <>
+                                                  <TableRow className={`bg-${statusDevice}`}>
+                                                    <TableCell className="">{v.deviceId}</TableCell>
+                                                    <TableCell>{v.ipAddress}</TableCell>
+                                                    <TableCell>{v.port}</TableCell>
+                                                    <TableCell>{v.status}</TableCell>
+                                                    </TableRow>
+                                                  </>
+                                                )
+                                              })
+                                            }
                                             </>
-                                          )
-                                        })
-                                      }
-                                      </>
-                                      :
-                                      <>
-                                       <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell className="font-medium"><div className='text-center ml-3 pl-3' style={{'width' : '10rem', 'marginLeft' : '3rem'}}>Data is not available</div></TableCell>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
-                                       </TableRow>
-                                      </>
-                                    }
-                                </TableBody>
-                              </Table>
-                              <div className='flex justify-end mt-3 mx-4'>
-                                  {/* <Pagination length={state.totalAccount} limit={state.limit} page={state.currentPage} callback={(pageNumber) => getAccount(pageNumber, (sortKeyValueAccount ? sortKeyValueAccount : 'name'), valueSortAccount)} /> */}
-                              </div>
+                                            :
+                                            <>
+                                            <TableRow>
+                                              <TableCell></TableCell>
+                                              <TableCell className="font-medium"><div className='text-center ml-3 pl-3' style={{'width' : '10rem', 'marginLeft' : '3rem'}}>Data is not available</div></TableCell>
+                                              <TableCell></TableCell>
+                                              <TableCell></TableCell>
+                                            </TableRow>
+                                            </>
+                                          }
+                                      </TableBody>
+                                    </Table>
+                                    <div className='flex justify-end mt-3 mx-4'>
+                                        {/* <Pagination length={state.totalAccount} limit={state.limit} page={state.currentPage} callback={(pageNumber) => getAccount(pageNumber, (sortKeyValueAccount ? sortKeyValueAccount : 'name'), valueSortAccount)} /> */}
+                                    </div>
+                                  </>
+                                  :
+                                  <>
+                                   <div className='flex justify-center'><Loading /></div>
+                                  </>
+                                }
                               </div>
                             </DialogHeader>
                           </DialogContent>

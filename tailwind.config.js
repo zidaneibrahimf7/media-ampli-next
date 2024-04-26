@@ -72,6 +72,9 @@ module.exports = {
         },
         backgroundPc: {
           DEFAULT: "hsl(var(--backgroundPc))"
+        },
+        warningCol: {
+          DEFAULT: "hsl(var(--warningCol))"
         }
       },
       borderRadius: {
