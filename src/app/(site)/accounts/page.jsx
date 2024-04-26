@@ -155,7 +155,7 @@ export default function AccountsPage() {
     setDone(true)
     const { code, content } = data
 
-    console.log(content, 'contentt')
+    // console.log(content, 'contentt')
 
     dispatch({'type': actionType.account, 'payload': content.results})
     dispatch({'type': actionType.totalAccount, payload: content.count})
@@ -171,7 +171,7 @@ export default function AccountsPage() {
     if(state.platform) return false
     // console.log(state.platform, 'sss')
 
-    console.log(page, 'pagee')
+    // console.log(page, 'pagee')
     if(!page) page = state.currentPage
     let offset = (page === 1) ? 0 : ((page - 1) * state.limit)
 

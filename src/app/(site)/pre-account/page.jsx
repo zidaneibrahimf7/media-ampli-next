@@ -350,7 +350,7 @@ export default function PreaccountPage(){
       })
 
       const data = await response.json()
-      console.log(data, 'data')
+      // console.log(data, 'data')
 
       const { code, content, message} = data
 

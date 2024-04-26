@@ -68,7 +68,7 @@ export default function DevicesPage() {
   
 
   const changeStatus = async(deviceId, isMaintenance) => {
-    console.log(deviceId, isMaintenance, 'status')
+    // console.log(deviceId, isMaintenance, 'status')
 
     let params = {
       deviceId: deviceId,

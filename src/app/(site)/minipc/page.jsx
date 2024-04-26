@@ -101,7 +101,7 @@ export default function Minipc() {
       })
   
       const data = await response.json()
-      console.log(data, 'asdasda')
+      // console.log(data, 'asdasda')
       let {code, content, message} = data
   
       if(code === 0) {
@@ -365,7 +365,6 @@ export default function Minipc() {
                   } else {
                     statusPc = 'backgroundPc'
                   }
-
                   return (
                     <>
                       <div className={`bg-${statusPc} rounded-md p-2 text-center transition ease-in-out hover:-translate-y-1 duration-300`}>
@@ -471,10 +470,16 @@ export default function Minipc() {
                                       <>
                                       {
                                         miniPcDevice.map((v, i) => {
-                                          console.log(v, i) 
+                                          // console.log(v, i, 'ss') 
+                                          let statusDevice = ''
+                                          if(v.status === 'error' || v.status === 'timeout') {
+                                            statusDevice = 'danger/50'
+                                          } else if (v.status === 'maintenance') {
+                                            statusDevice = 'yellow-200'
+                                          }
                                           return (
                                             <>
-                                             <TableRow>
+                                             <TableRow className={`bg-${statusDevice}`}>
                                               <TableCell className="font-medium">{v.deviceId}</TableCell>
                                               <TableCell>{v.ipAddress}</TableCell>
                                               <TableCell>{v.port}</TableCell>
