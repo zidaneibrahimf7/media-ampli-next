@@ -18,7 +18,6 @@ import moment from 'moment'
 
 import { useSession } from 'next-auth/react'
 
-import getMediaPhotoProfile from '@/helpers/getMediaPhotoProfile'
 import Loading from '@/components/utilities/Loading'
 
 
