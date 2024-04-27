@@ -758,7 +758,7 @@ export default function AccountsPage() {
                                   // const src = `/api/Media/photoProfile/${value.profilePicture}`;
                                   const myLoader=({src})=>{
                                     // console.log(src, 'ww')
-                                    return `http://2.250.10.1:21215/api/Media/getProfilePicture/${value.profilePicture}`;
+                                    return `http://192.168.1.101:21215/api/Media/getProfilePicture/${value.profilePicture}`;
                                   }
 
                                   const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image loader={myLoader} src={`http://2.250.10.1:21215/api/Media/getProfilePicture/${value.profilePicture}`} layout='fill' objectFit='cover' className="rounded-full" /></div>
