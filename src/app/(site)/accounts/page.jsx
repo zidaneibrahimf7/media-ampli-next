@@ -755,36 +755,28 @@ export default function AccountsPage() {
                             <TableBody>
                               {
                                 state.account.map((value, index) => {
-                                  // console.log(value, 'vass')
+                                  // const src = `/api/Media/photoProfile/${value.profilePicture}`;
+                                  const myLoader=({src})=>{
+                                    // console.log(src, 'ww')
+                                    return `http://2.250.10.1:21215/api/Media/getProfilePicture/${value.profilePicture}`;
+                                  }
 
-                                  const nameWithProfilePicture = <div className='relative' style={{'height' : '20px', 'width' : '20px'}}><Image src={`/api/Media/photoProfile/${value.profilePicture}`} layout='fill' objectFit='cover' /></div>
-                                  // console.log(value.statusActive)
+                                  const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image loader={myLoader} src={`http://2.250.10.1:21215/api/Media/getProfilePicture/${value.profilePicture}`} layout='fill' objectFit='cover' className="rounded-full" /></div>
+                                  
+                                  console.log(value)
+                                  
                                   let valueActive = ''
                                   // let valueStatusActive = ''
-                                  switch(value.status){
-                                    case 'active':
-                                        // valueActive = <Badge variant="success">Active</Badge>
-                                        switch(valueActive.statusActive){
-                                          case 'active':
-                                            valueActive = <Badge variant="success">Active</Badge>
-                                            break;
-                                          case 'backup':
-                                            valueActive = <Badge variant="success">Active</Badge>
-                                            break;
-                                        }
-                                        break;
-                                    // case 'backup':
-                                    //     valueActive = <Badge variant="secondary">Backup</Badge>
-                                    //     break;
-                                    case 'inactive':
-                                        valueActive = <Badge variant="warning">Inactive</Badge>
-                                        break;
-                                    case 'not_available':
-                                        valueActive = <Badge variant="danger">Banned</Badge>
-                                        break;
-                                    default:
-                                      valueActive = <Badge>No Status</Badge>
-                                      break;
+                                  if(value.status === ' active' && value.statusActive === 'active') {
+                                    valueActive = <Badge variant="success">Active</Badge>
+                                  } else if (value.status === ' active' && value.statusActive === 'backup') {
+                                    valueActive = <Badge variant="success">Active</Badge>
+                                  } else if (value.status === 'inactive') {
+                                    valueActive = <Badge variant="warning">Inactive</Badge>
+                                  } else if (value.status === 'not_available') {
+                                    valueActive = <Badge variant="danger">Banned</Badge>
+                                  } else {
+                                    valueActive = <Badge>No Status</Badge>
                                   }
         
                                   return (
@@ -794,7 +786,7 @@ export default function AccountsPage() {
                                       }
                                       <TableRow className="hover:bg-white" key={index}>
                                         {/* <TableCell>{nameWithProfilePicture}</TableCell> */}
-                                        <TableCell><div className='flex gap-2'>{nameWithProfilePicture}{value.name}</div></TableCell>
+                                        <TableCell><div className='flex gap-2'>{nameWithProfilePicture}<span className="mt-2">{value.name}</span></div></TableCell>
                                         {/* <TableCell>{value.userId ? value.userId : "-"}</TableCell> */}
                                         <TableCell>{value.id ? value.id : " "}</TableCell>
                                         {/* <TableCell>{value.username ? value.username : " "}</TableCell> */}

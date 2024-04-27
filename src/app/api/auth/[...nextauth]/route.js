@@ -15,7 +15,7 @@ export const authOptions = {
         // console.log(req, 'reqqq')
         let clientIp = req.headers['x-forwarded-for'].split(':')
         clientIp = clientIp[clientIp.length - 1];
-        console.log(clientIp, 'clientIp')
+        // console.log(clientIp, 'clientIp')
 
         let params = JSON.stringify({
           clientIp,
@@ -26,7 +26,7 @@ export const authOptions = {
           }
         })
 
-        console.log(params, 'parameters')
+        // console.log(params, 'parameters')
 
         try {
           const response = await fetch('http://' + process.env.API_HOST_LOGIN + '/api/Auth/login', {
