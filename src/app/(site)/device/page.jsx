@@ -89,7 +89,7 @@ export default function DevicesPage() {
     let { code, content, message } = data
 
     if(code === 0) {
-      toast.success(message, {
+      toast.success((isMaintenance === 1 ? 'set active success' : 'set maintenance success'), {
         style: {
           border: '1px solid #55CD6C',
           padding: '12px',
