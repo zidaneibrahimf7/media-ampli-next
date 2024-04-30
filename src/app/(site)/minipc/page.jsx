@@ -303,6 +303,20 @@ export default function Minipc() {
     <>
      <section className='rounded-sm py-3 m-5 bg-white items-center shadow-xl'>
         <h1 className='text-2xl font-semibold my-5 mx-3'>PC List</h1>
+        <div className='mx-3 flex gap-2'>
+          <div className='flex gap-1'>
+              <p className='bg-success text-success px-1 rounded-md'>P</p>
+              <label>On</label>
+          </div>
+          <div className='flex gap-1'>
+              <p className='bg-warning text-warning px-1 rounded-md'>P</p>
+              <label>Warning</label>
+          </div>
+          <div className='flex gap-1'>
+              <p className='bg-danger text-danger px-1 rounded-md'>P</p>
+              <label>Unreachable</label>
+          </div>
+        </div>
         {
           done ? 
           <>

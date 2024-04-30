@@ -747,6 +747,7 @@ export default function AccountsPage() {
                               <TableRow>
                                 <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('name')}>Name {sortKeyValueAccount === 'name' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
                                 <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('id')}>User ID {sortKeyValueAccount === 'id' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
+                                <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('deviceId')}>Device ID {sortKeyValueAccount === 'deviceId' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
                                 <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('statusActive')}>Status {sortKeyValueAccount === 'statusActive' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
                                 <TableHead className="text-secondary">Platform</TableHead>
                                 <TableHead className="text-secondary"><Button className="flex justify-center bg-primary items-center gap-1 hover:text-success" onClick={() => handleSorterAccount('lastActivity')}>Last Activity {sortKeyValueAccount === 'lastActivity' ? sortOrderAccount === 'asc' ? <ArrowUp size={17} /> : <ArrowDown size={17} /> : <ArrowUpDown size={17} className='opacity-50' />}</Button></TableHead>
@@ -782,16 +783,10 @@ export default function AccountsPage() {
         
                                   return (
                                     <>
-                                      {
-        
-                                      }
                                       <TableRow className="hover:bg-white" key={index}>
-                                        {/* <TableCell>{nameWithProfilePicture}</TableCell> */}
                                         <TableCell><div className='flex gap-2'>{nameWithProfilePicture}<span className="mt-2">{value.name}</span></div></TableCell>
-                                        {/* <TableCell>{value.userId ? value.userId : "-"}</TableCell> */}
                                         <TableCell>{value.id ? value.id : " "}</TableCell>
-                                        {/* <TableCell>{value.username ? value.username : " "}</TableCell> */}
-                                        {/* <TableCell>{value.statusActive ? value.statusActive : " "}</TableCell> */}
+                                        <TableCell>{value.deviceId ? value.deviceId : " "}</TableCell>
                                         <TableCell>{valueActive ? <div className='mx-3'>{valueActive}</div> : " "}</TableCell>
                                         <TableCell>{value.platform ? value.platform : " "}</TableCell>
                                         <TableCell>{value.lastActivity? moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm') : "-"}</TableCell>
