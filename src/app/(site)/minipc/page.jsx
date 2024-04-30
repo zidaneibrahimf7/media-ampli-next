@@ -321,7 +321,7 @@ export default function Minipc() {
           done ? 
           <>
            <div className='flex justify-between mx-4'>
-             <span className=''>Total: {countMinipc} devices</span>
+             <span className=''>Total: {countMinipc} PC</span>
              {/* Add New PC List */}
              <Dialog>
              <DialogTrigger asChild>
