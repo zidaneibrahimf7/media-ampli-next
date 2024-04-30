@@ -387,7 +387,7 @@ export default function Minipc() {
                             <DialogHeader>
                               <DialogTitle>
                                 <div className='flex justify-between'>
-                                    <h3 className='text-2xl font-bold'>PC Info</h3>
+                                    <h3 className='text-2xl font-bold'>{v.name}</h3>
                                     <div className='mt-5 flex gap-2'>
                                       {/* Update Button + Dialog */}
                                       <Dialog>

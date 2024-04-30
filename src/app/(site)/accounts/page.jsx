@@ -763,14 +763,15 @@ export default function AccountsPage() {
 
                                   const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image loader={myLoader} src={`http://192.168.1.101:21215/api/Media/getProfilePicture/${value.profilePicture}`} layout='fill' objectFit='cover' className="rounded-full" /></div>
                                   
-                                  // console.log(value)
+                                  console.log(value.status)
+                                  console.log(value.statusActive)
                                   
                                   let valueActive = ''
                                   // let valueStatusActive = ''
-                                  if(value.status === ' active' && value.statusActive === 'active') {
+                                  if(value.status === ' active' || value.statusActive === 'active') {
                                     valueActive = <Badge variant="success">Active</Badge>
-                                  } else if (value.status === ' active' && value.statusActive === 'backup') {
-                                    valueActive = <Badge variant="success">Active</Badge>
+                                  } else if (value.status === 'active' && value.statusActive === 'backup') {
+                                    valueActive = <Badge variant="outline">Backup</Badge>
                                   } else if (value.status === 'inactive') {
                                     valueActive = <Badge variant="warning">Inactive</Badge>
                                   } else if (value.status === 'not_available') {
