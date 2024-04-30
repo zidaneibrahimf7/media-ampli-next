@@ -143,14 +143,14 @@ export default function DevicesPage() {
                       //   getDevices()
                       // }
                     }}
-                    // onKeyPress={(event) => {
-                    //   if (event.key === 'Enter') {
-                    //     event.preventDefault();
-                    //     // console.log(event.key, event.target.value)
-                    //     setSearchDevices(event.target.value)
-                    //     // getDevices()
-                    //   }
-                    // }}
+                    onKeyPress={(event) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
+                        // console.log(event.key, event.target.value)
+                        setSearchDevices(event.target.value)
+                        // getDevices()
+                      }
+                    }}
                     className="mr-3"
                     style={{'width': '13rem'}}
                     />
