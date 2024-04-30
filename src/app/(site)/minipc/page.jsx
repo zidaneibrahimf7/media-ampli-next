@@ -485,7 +485,7 @@ export default function Minipc() {
                                                 if(v.status === 'error' || v.status === 'timeout') {
                                                   statusDevice = 'danger/50'
                                                 } else if (v.status === 'maintenance') {
-                                                  statusDevice = 'warning'
+                                                  statusDevice = 'yellow-300/30'
                                                 }
                                                 return (
                                                   <>

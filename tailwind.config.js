@@ -75,7 +75,7 @@ module.exports = {
         },
         warningCol: {
           DEFAULT: "hsl(var(--warningCol))"
-        }
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

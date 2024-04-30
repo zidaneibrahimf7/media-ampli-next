@@ -694,7 +694,7 @@ export default function PreaccountPage(){
                         const platformActive =  value.platformLogin.map((platform) => {
                           if(platform.status === 1) {
                             return (
-                                <div className='relative col-span-1' style={{'width' : '35px', 'height' : '35px'}} key={platform._id}>
+                                <div className='relative col-span-1' style={{'width' : '27px', 'height' : '27px'}} key={platform._id}>
                                   <Image
                                       src={`/socmed/${platform.platform}.svg`}
                                       layout='fill'

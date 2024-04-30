@@ -271,8 +271,8 @@ export default function AccountsPage() {
         status === 'authenticated' ?
         <>
         <section className='bg-white rounded rounded-lg m-4 shadow-xl'>
-          <div className='p-6 grid grid-cols-8 gap-4'>
-            <div className='col-span-2 grid grid-cols-3' name="totalAccount">
+          <div className='p-6 grid grid-cols-8 gap-4 gap-x-7'>
+            <div className='col-span-2 grid grid-cols-3 bg-secondary/50 rounded-lg shadow shadow-lg' name="totalAccount">
               <div className='col-span-1 py-14 px-5'>
                 <Users size={80} className='' />
               </div>
@@ -297,7 +297,7 @@ export default function AccountsPage() {
                     }
                   </div>
                   <div className='text-center'>
-                    <Badge variant="secondary">Backup</Badge>
+                    <Badge variant="outline">Backup</Badge>
                     {
                       typeof accountSummaryDetailed.total_inactive ?
                       <><h5 className='font-bold text-2xl'>{accountSummaryDetailed.total_backup > 0 ? accountSummaryDetailed.total_backup : 0}</h5></>
@@ -326,9 +326,9 @@ export default function AccountsPage() {
                 </div>
               </div>
             </div>
-            <div className='p-2' name="facebook">
+            <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="facebook">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'><Image src="/socmed/facebook.png" width="50" height="50" alt='facebook' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16' style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/facebook.png" layout='fill' objectFit='contain' alt='facebook' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -349,7 +349,7 @@ export default function AccountsPage() {
                     }
                   </div>
                   <div className='text-center'>
-                    <Badge variant="secondary">Backup</Badge>
+                    <Badge variant="outline">Backup</Badge>
                     {
                       typeof accountSummaryDetailed?.facebook?.backup === 'number' ?
                       <><h5 className='font-bold text-xl'>{accountSummaryDetailed.facebook.backup > 0 ? accountSummaryDetailed.facebook.backup : 0}</h5> </>
@@ -380,9 +380,9 @@ export default function AccountsPage() {
                 </div>
               </div>
             </div>
-            <div className='p-2' name="twitter">
+            <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="twitter">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'><Image src="/socmed/twitter.png" width="50" height="50" alt='twitter' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/twitter.png" layout="fill" objectFit="contain" alt='twitter' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -403,7 +403,7 @@ export default function AccountsPage() {
                     }
                   </div>
                   <div className='text-center'>
-                    <Badge variant="secondary">Backup</Badge>
+                    <Badge variant="outline">Backup</Badge>
                     {
                       typeof accountSummaryDetailed?.twitter?.backup === 'number' ?
                       <><h5 className='font-bold text-xl'>{accountSummaryDetailed.twitter.backup > 0 ? accountSummaryDetailed.twitter.backup : 0}</h5> </>
@@ -434,9 +434,9 @@ export default function AccountsPage() {
                 </div>
               </div>
             </div>
-            <div className='p-2' name="instagram">
+            <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="instagram">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'><Image src="/socmed/instagram.png" width="50" height="50" alt='instagram' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/instagram.png" layout='fill' objectFit='contain' alt='instagram' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -457,7 +457,7 @@ export default function AccountsPage() {
                     }
                   </div>
                   <div className='text-center'>
-                    <Badge variant="secondary">Backup</Badge>
+                    <Badge variant="outline">Backup</Badge>
                     {
                       typeof accountSummaryDetailed?.instagram?.backup === 'number' ?
                       <><h5 className='font-bold text-xl'>{accountSummaryDetailed.instagram.backup > 0 ? accountSummaryDetailed.instagram.backup : 0}</h5> </>
@@ -488,9 +488,9 @@ export default function AccountsPage() {
                 </div>
               </div>
             </div>
-            <div className='p-2' name="tiktok">
+            <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="tiktok">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'><Image src="/socmed/tiktok.png" width="50" height="50" alt='tiktok' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/tiktok.png" layout='fill' objectFit='contain' alt='tiktok' className='rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -511,7 +511,7 @@ export default function AccountsPage() {
                     }
                   </div>
                   <div className='text-center'>
-                    <Badge variant="secondary">Backup</Badge>
+                    <Badge variant="outline">Backup</Badge>
                     {
                       typeof accountSummaryDetailed?.tiktok?.backup === 'number' ?
                       <><h5 className='font-bold text-xl'>{accountSummaryDetailed.tiktok.backup > 0 ? accountSummaryDetailed.tiktok.backup : 0}</h5> </>
@@ -542,9 +542,9 @@ export default function AccountsPage() {
                 </div>
               </div>
             </div>
-            <div className='p-2' name="detik">
+            <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="detik">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'><Image src="/socmed/detik.png" width="50" height="50" alt='detik' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/detik.png" layout="fill" objectFit='contain' alt='detik' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -565,7 +565,7 @@ export default function AccountsPage() {
                     }
                   </div>
                   <div className='text-center'>
-                    <Badge variant="secondary">Backup</Badge>
+                    <Badge variant="outline">Backup</Badge>
                     {
                       typeof accountSummaryDetailed?.detik?.backup === 'number' ?
                       <><h5 className='font-bold text-xl'>{accountSummaryDetailed.detik.backup > 0 ? accountSummaryDetailed.detik.backup : 0}</h5> </>
@@ -596,9 +596,9 @@ export default function AccountsPage() {
                 </div>
               </div>
             </div>
-            <div className='p-2' name="kompas">
+            <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="kompas">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'><Image src="/socmed/kompas.png" width="50" height="50" alt='kompas' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/kompas.png" layout='fill' objectFit='contain' alt='kompas' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -619,7 +619,7 @@ export default function AccountsPage() {
                     }
                   </div>
                   <div className='text-center'>
-                    <Badge variant="secondary">Backup</Badge>
+                    <Badge variant="outline">Backup</Badge>
                     {
                       typeof accountSummaryDetailed?.kompas?.backup === 'number' ?
                       <><h5 className='font-bold text-xl'>{accountSummaryDetailed.kompas.backup > 0 ? accountSummaryDetailed.kompas.backup : 0}</h5> </>
