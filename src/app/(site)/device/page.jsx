@@ -109,7 +109,7 @@ export default function DevicesPage() {
 
   useEffect(() => {
     getDevices()
-  }, [])
+  }, [searchDevices])
 
 
 
@@ -131,26 +131,26 @@ export default function DevicesPage() {
             </div>
             <div className='flex justify-end mx-3'>
                   <form>
-                    <Label className="text-xs">Search by Device Port</Label>
+                    {/* <Label className="text-xs">Search by Device Port</Label> */}
                     <Input
                     type="text"
-                    placeholder="search and then press enter..."
+                    placeholder="search...."
                     onChange={(e) => {
                       e.preventDefault()
                       // console.log(e.target.value)
                       setSearchDevices(e.target.value)
-                      if (!e) {
-                        getDevices()
-                      }
+                      // if (!e) {
+                      //   getDevices()
+                      // }
                     }}
-                    onKeyPress={(event) => {
-                      if (event.key === 'Enter') {
-                        event.preventDefault();
-                        // console.log(event.key, event.target.value)
-                        setSearchDevices(event.target.value)
-                        getDevices()
-                      }
-                    }}
+                    // onKeyPress={(event) => {
+                    //   if (event.key === 'Enter') {
+                    //     event.preventDefault();
+                    //     // console.log(event.key, event.target.value)
+                    //     setSearchDevices(event.target.value)
+                    //     // getDevices()
+                    //   }
+                    // }}
                     className="mr-3"
                     style={{'width': '13rem'}}
                     />
@@ -164,8 +164,8 @@ export default function DevicesPage() {
                 <Table className="bg-secondary rounded-sm">
                   <TableHeader className="text-center items-center bg-primary">
                     <TableRow>
+                      <TableHead className="text-secondary">Device ID</TableHead>
                       <TableHead className="text-secondary">Device Port</TableHead>
-                      <TableHead className="text-secondary">Port</TableHead>
                       <TableHead className="text-secondary pl-4" style={{'paddingLeft' : '2rem'}}>Status</TableHead>
                       <TableHead className="text-secondary">Status Activity</TableHead>
                       <TableHead className="text-secondary">Last Activity</TableHead>
@@ -178,8 +178,8 @@ export default function DevicesPage() {
                           // console.log(v, i)
                           return (
                             <TableRow className="hover:bg-white">
+                              <TableCell>{v._id}</TableCell>
                               <TableCell>{v.deviceIpPort}</TableCell>
-                              <TableCell>{v.port}</TableCell>
                               <TableCell>{v.isMaintenance === 0 ? <Badge variant="success" className="ml-3" style={{'marginLeft' : '1.4rem'}}>Active</Badge> : <Badge variant="warning">Maintenance</Badge>}</TableCell>
                               <TableCell><div className='mx-3 px-3'>{v.statusActivity}</div></TableCell>
                               <TableCell>{moment.utc(v.lastActivity).format('YYYY-MM-DD HH:mm')}</TableCell>
