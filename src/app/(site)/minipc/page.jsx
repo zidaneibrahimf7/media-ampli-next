@@ -58,7 +58,7 @@ export default function Minipc() {
     let params = {
       // offset: "",
       // limit: "",
-      search: "1"
+      // search: "1"
     }
 
     try {
