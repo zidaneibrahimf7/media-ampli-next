@@ -29,6 +29,7 @@ import PcListInfo from '@/components/minipcPage/MiniPcInfo/PcListInfo'
 import TableMiniPcDeviceList from '@/components/minipcPage/MiniPcDevice/TableMiniPcDeviceList'
 import Loading from '../utilities/Loading'
 import OrganizationalMiniPcDevice from './MiniPcDevice/OrganizationalMiniPcDevice'
+import NotificationMiniPcDevice from './MiniPcDevice/NotificationMiniPcDevice'
 
   export default function MonitorPcList({data, status}) {
     const [miniPcDevice, setMiniPcDevice] = useState({})
@@ -88,7 +89,7 @@ import OrganizationalMiniPcDevice from './MiniPcDevice/OrganizationalMiniPcDevic
                     <Badge variant={'secondary'}>{data.name}</Badge>
                 </button>
                 </DialogTrigger>
-                <DialogContent className="w-full overflow-x-scroll overflow-y-scroll" key={data.port} style={{ width: '100%', maxWidth: '100rem', height: 'auto' }}>
+                <DialogContent className="w-full overflow-x-scroll overflow-y-scroll" key={data.port} style={{ width: '100%', maxWidth: '80rem', height: 'auto' }}>
                     <DialogHeader>
                         <DialogTitle>
                         <section className='flex justify-between'>
@@ -104,7 +105,10 @@ import OrganizationalMiniPcDevice from './MiniPcDevice/OrganizationalMiniPcDevic
                             {
                                 done ? 
                                 // Table
-                                <TableMiniPcDeviceList id={data.miniPcId} data={miniPcDevice} count={countMiniPcDevice} />
+                                <div className='flex gap-2'>
+                                  <div className='bg-warning/70 rounded-lg'><NotificationMiniPcDevice id={data.miniPcId} /></div>
+                                  <div className='grow border border-2'><TableMiniPcDeviceList id={data.miniPcId} data={miniPcDevice} count={countMiniPcDevice} /></div>
+                                </div>
                                 // <OrganizationalMiniPcDevice data={miniPcDevice} namePc={data.name}/>
                                 :
                                 <div className='flex justify-center'><Loading /></div>

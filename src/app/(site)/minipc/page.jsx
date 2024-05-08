@@ -75,7 +75,7 @@ export default function Minipc() {
                       let statusPc = ''
                       if(v.statusMiniPc === 'on' && v.deviceCount >= 40) {
                         statusPc ='success'
-                      } else if(v.statusMiniPc === 'on' && v.deviceCount < 40) {
+                      } else if(v.statusMiniPc === 'on' && v.notifCount > 0) {
                         statusPc ='warning'
                       } else if (v.statusMiniPc === 'unreachable') {
                         statusPc = 'danger'

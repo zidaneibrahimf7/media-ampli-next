@@ -165,7 +165,7 @@ export default function DevicesPage() {
                   <TableHeader className="text-center items-center bg-primary">
                     <TableRow>
                       <TableHead className="text-secondary">Device ID</TableHead>
-                      <TableHead className="text-secondary">IP Portt</TableHead>
+                      <TableHead className="text-secondary">IP Port</TableHead>
                       <TableHead className="text-secondary pl-4" style={{'paddingLeft' : '2rem'}}>Status</TableHead>
                       <TableHead className="text-secondary">Status Activity</TableHead>
                       <TableHead className="text-secondary">Last Activity</TableHead>

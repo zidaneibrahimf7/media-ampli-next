@@ -33,7 +33,10 @@ export async function GET(req) {
         path = 'MiniPc/deleteMiniPc'
         break;
     case 'getMiniPcDevice':
-        path= "MiniPc/getMiniPcDevice"
+        path = "MiniPc/getMiniPcDevice"
+        break;
+    case 'getMiniPcNotif':
+        path = "MiniPc/getMiniPcNotif"
         break;
     default:
       path = ''
@@ -109,7 +112,10 @@ export async function POST(req) {
       path = 'MiniPc/deleteMiniPc'
       break;
     case 'getMiniPcDevice':
-      path= "MiniPc/getMiniPcDevice"
+      path = "MiniPc/getMiniPcDevice"
+      break;
+    case 'getMiniPcNotif':
+      path = "MiniPc/getMiniPcNotif"
       break;
     default:
       path = ''
