@@ -81,7 +81,7 @@ import OrganizationalMiniPcDevice from './MiniPcDevice/OrganizationalMiniPcDevic
     return (
         <main className={`bg-${status} rounded-md p-2 text-center transition ease-in-out hover:-translate-y-1 duration-300`}>
             {/* Dialog Mode */}
-            {/* <Dialog>
+            <Dialog>
                 <DialogTrigger asChild>
                 <button className='text-center' onClick={() => handleGetMiniPcDevice(data.miniPcId)}>
                     <Monitor size={40} className='text-secondary ml-3' />
@@ -104,20 +104,20 @@ import OrganizationalMiniPcDevice from './MiniPcDevice/OrganizationalMiniPcDevic
                             {
                                 done ? 
                                 // Table
-                                // <TableMiniPcDeviceList id={data.miniPcId} data={miniPcDevice} count={countMiniPcDevice} />
-                                <OrganizationalMiniPcDevice data={miniPcDevice} namePc={data.name}/>
+                                <TableMiniPcDeviceList id={data.miniPcId} data={miniPcDevice} count={countMiniPcDevice} />
+                                // <OrganizationalMiniPcDevice data={miniPcDevice} namePc={data.name}/>
                                 :
                                 <div className='flex justify-center'><Loading /></div>
                             }
                         </div>
                     </DialogHeader>
                 </DialogContent>
-            </Dialog> */}
+            </Dialog>
             {/* Ini ke page langsung (idealnya sementara ini) */}
-            <button onClick={() => handlePushToPage(data.miniPcId)}>
+            {/* <button onClick={() => handlePushToPage(data.miniPcId)}>
               <Monitor size={40} className='text-secondary ml-3' />
               <Badge variant={'secondary'}>{data.name}</Badge>
-            </button>
+            </button> */}
         </main>
     )
   }
