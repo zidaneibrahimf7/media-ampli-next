@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button'
 import { MoveLeft } from 'lucide-react'
 import Loading from '@/components/utilities/Loading'
 import OrganizationalMiniPcDevice from '@/components/minipcPage/MiniPcDevice/OrganizationalMiniPcDevice'
-import UpdateMiniPc from '@/components/minipcPage/FormsMiniPc/UpdateMiniPc'
-import DeleteMiniPc from '@/components/minipcPage/FormsMiniPc/DeleteMiniPc'
+// import UpdateMiniPc from '@/components/minipcPage/FormsMiniPc/UpdateMiniPc'
+// import DeleteMiniPc from '@/components/minipcPage/FormsMiniPc/DeleteMiniPc'
 
 export default function MiniPcDevicePage({}){
   const pathname = usePathname()
