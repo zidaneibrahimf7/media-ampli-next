@@ -105,11 +105,11 @@ import NotificationMiniPcDevice from './MiniPcDevice/NotificationMiniPcDevice'
                             {
                                 done ? 
                                 // Table
-                                <div className='flex gap-2'>
-                                  <div className='bg-warning/70 rounded-lg'><NotificationMiniPcDevice id={data.miniPcId} /></div>
-                                  <div className='grow border border-2'><TableMiniPcDeviceList id={data.miniPcId} data={miniPcDevice} count={countMiniPcDevice} /></div>
-                                </div>
-                                // <OrganizationalMiniPcDevice data={miniPcDevice} namePc={data.name}/>
+                                // <div className='flex gap-2'>
+                                //   <div className='bg-warning/70 rounded-lg'><NotificationMiniPcDevice id={data.miniPcId} /></div>
+                                //   <div className='grow border border-2'><TableMiniPcDeviceList id={data.miniPcId} data={miniPcDevice} count={countMiniPcDevice} /></div>
+                                // </div>
+                                <OrganizationalMiniPcDevice data={miniPcDevice} namePc={data.name}/>
                                 :
                                 <div className='flex justify-center'><Loading /></div>
                             }
