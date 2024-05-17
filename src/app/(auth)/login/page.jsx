@@ -7,16 +7,13 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup'
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
-import { Label } from '@/components/ui/label';
-import ToasterSuccess from '@/components/utilities/toastr-success';
-import ToasterFailed from '@/components/utilities/toastr-failed';
-import ToasterWarning from '@/components/utilities/toastr-warning';
 
 import { redirect } from 'next/navigation';
 
 import { signIn } from 'next-auth/react'
 
 import { Eye, EyeOff } from 'lucide-react'
+import { toastrError, toastrSuccess } from '@/helpers/Toaster';
 
 export default function Login() {
   const [loginUpdate, setLoginUpdate] = useState({})
@@ -42,38 +39,12 @@ export default function Login() {
       setLoginUpdate(loggingIn)
 
       if (loggingIn.ok) {
-        toast.success('Login success', {
-          style: {
-            border: '1px solid #55CD6C',
-            padding: '12px',
-            color: '#FFFAEE',
-            backgroundColor: '#55CD6C'
-          },
-          iconTheme: {
-            primary: '#FFFAEE',
-            secondary: '#55CD6C',
-          },
-        })
-
-        // <ToasterSuccess message={'successfully login'} />
-
-        // setTimeout(() => window.location.replace('/account'), 2200);
+        toastrSuccess('Login success!')
         setTimeout(() => redirect('/accounts', 'replace'), 3000)
       }
 
       if(!loggingIn.ok) {
-        toast.error('Invalid Username/Password', {
-          style: {
-            border: '1px solid hsl(0 100% 64%)',
-            padding: '12px',
-            color: '#FFFAEE',
-            backgroundColor: 'hsl(0 100% 64%)'
-          },
-          iconTheme: {
-            primary: '#FFFAEE',
-            secondary: 'hsl(0 100% 64%)'
-          },
-        })
+        toastrError('Invalid username/Password')
       }
 
       // if (loggingIn.error) setHasError(true)
