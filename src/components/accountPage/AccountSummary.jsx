@@ -39,8 +39,8 @@ export default function AccountSummary() {
    <>
     <div className='p-6 grid grid-cols-8 gap-4 gap-x-7'>
             <div className='col-span-2 grid grid-cols-3 bg-secondary/50 rounded-lg shadow shadow-lg' name="totalAccount">
-              <div className='col-span-1 py-14 px-5'>
-                <Users size={80} className='' />
+              <div className='col-span-1 py-14'>
+                <Users size={120} className='bg-slate-400 rounded-full p-3' strokeWidth={2} color='white' />
               </div>
               <div className='col-span-2'>
                 <div className='grid grid-cols-2 grid-rows-2 py-4'>

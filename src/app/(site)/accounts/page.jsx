@@ -246,12 +246,14 @@ export default function AccountsPage() {
                                 {
                                   state.account.map((value, index) => {
                                     // const src = `/api/Media/photoProfile/${value.profilePicture}`;
-                                    const myLoader=({src})=>{
-                                      // console.log(src, 'ww')
-                                      return `http://2.250.10.1:21215/api/Media/getProfilePicture/${value.profilePicture}`;
-                                    }
+                                    // const myLoader=({src})=>{
+                                    //   // console.log(src, 'ww')
+                                    //   // return `http://2.250.10.1:21215/api/Media/getProfilePicture/${value.profilePicture}`;
+                                    //   return `/api/media/profilePicture/${value.profilePicture}`;
+                                    // }
 
-                                    const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image loader={myLoader} src={`http://192.168.1.101:21215/api/Media/getProfilePicture/${value.profilePicture}`} layout='fill' objectFit='cover' className="rounded-full" /></div>
+                                    // const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image loader={myLoader} src={`http://192.168.1.101:21215/api/Media/getProfilePicture/${value.profilePicture}`} layout='fill' objectFit='cover' className="rounded-full" /></div>
+                                    const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image src={`/api/media/profilePicture/${value.profilePicture}`} layout='fill' objectFit='cover' className="rounded-full" /></div>
                                     
                                     // console.log(value.status)
                                     // console.log(value.statusActive)
