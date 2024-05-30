@@ -29,11 +29,11 @@ export default function CreatePreaccount(){
         email: Yup.string().required('email required'),
         password: Yup.string().required('password required'),
         backupCode: Yup.string().required('backup code required'),
-        passwordInstagram: Yup.string().required('password required'),
-        passwordFacebook: Yup.string().required('password required'),
-        passwordDetik: Yup.string().required('password required'),
-        msisdnDetik: Yup.string().required('phone number required'),
-        usernameTwitter: Yup.string().required('username required').matches(/^@/, 'Username must add @'),
+        // passwordInstagram: Yup.string().required('password required'),
+        // passwordFacebook: Yup.string().required('password required'),
+        // passwordDetik: Yup.string().required('password required'),
+        // msisdnDetik: Yup.string().required('phone number required'),
+        // usernameTwitter: Yup.string().required('username required').matches(/^@/, 'Username must add @'),
       })
 
     const formik = useFormik({
@@ -135,19 +135,8 @@ export default function CreatePreaccount(){
         
               if(code === 0 && content) {
                 toastrSuccess(message)
-                // toast.success(message, {
-                //   style: {
-                //     border: '1px solid #55CD6C',
-                //     padding: '12px',
-                //     color: '#FFFAEE',
-                //     backgroundColor: '#55CD6C'
-                //   },
-                //   iconTheme: {
-                //     primary: '#FFFAEE',
-                //     secondary: '#55CD6C',
-                //   },
-                // })
               }
+
               setTimeout(() => location.reload(), 2000)
         }
     })
@@ -169,7 +158,7 @@ export default function CreatePreaccount(){
                 <DialogTrigger asChild>
                     <Button variant="success" className="text-lg flex gap-2"><UserRoundPlus size={24} />Create Preaccount</Button>
                 </DialogTrigger>
-                <DialogContent className="w-full" style={{ width: '100%', maxWidth: '65rem', height: 'auto' }}>
+                <DialogContent className="w-full overflow-y-scroll max-h-screen" style={{ width: '100%', maxWidth: '65rem' }}>
                     <DialogHeader>
                         <DialogTitle className='text-2xl font-bold'>Create Preaccount</DialogTitle>
                     </DialogHeader>
@@ -278,11 +267,11 @@ export default function CreatePreaccount(){
                                                 onChange={formik.handleChange}
                                                 value={formik.values.passwordInstagram}
                                             /> 
-                                            {
+                                            {/* {
                                                 formik.errors.passwordInstagram && (
                                                     <Label className="text-red-500 text-xs mx-1">{formik.errors.passwordInstagram}<span className="text-red-500 mx-1">*</span></Label>
                                                 )
-                                            }
+                                            } */}
                                         </div>
                                     </div>
                                     <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 ml-3'>
@@ -307,11 +296,11 @@ export default function CreatePreaccount(){
                                                 onChange={formik.handleChange}
                                                 value={formik.values.passwordFacebook}
                                                 /> 
-                                                {
+                                                {/* {
                                                     formik.errors.passwordFacebook && (
                                                         <Label className="text-red-500 text-xs mx-1">{formik.errors.passwordFacebook}<span className="text-red-500 mx-1">*</span></Label>
                                                     )
-                                                }
+                                                } */}
                                         </div>
                                     </div>
                                     <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 mr-3'>
@@ -336,11 +325,11 @@ export default function CreatePreaccount(){
                                                 onChange={formik.handleChange}
                                                 value={formik.values.usernameTwitter}
                                                 /> 
-                                                {
+                                                {/* {
                                                     formik.errors.usernameTwitter && (
                                                         <Label className="text-red-500 text-xs mx-1">{formik.errors.usernameTwitter}<span className="text-red-500">*</span></Label>
                                                     )
-                                                }
+                                                } */}
                                         </div>
                                     </div>
                                     <div className='shadow shadow-lg p-3 bg-backgroundCell/30 rounded-xl my-1 ml-3'>
@@ -365,11 +354,11 @@ export default function CreatePreaccount(){
                                                 onChange={formik.handleChange}
                                                 value={formik.values.passwordDetik}
                                             />
-                                            {
+                                            {/* {
                                                 formik.errors.passwordDetik && (
                                                     <Label className="text-red-500 text-xs mx-1">{formik.errors.passwordDetik}<span className="text-red-500">*</span></Label>
                                                 )
-                                            }
+                                            } */}
                                         </div>
                                         <div>
                                             <small className='text-xs ml-1'>Set phone number</small>
@@ -382,11 +371,11 @@ export default function CreatePreaccount(){
                                                 onChange={formik.handleChange}
                                                 value={formik.values.msisdnDetik}
                                                 />
-                                            {
+                                            {/* {
                                                 formik.errors.msisdnDetik && (
                                                     <Label className="text-red-500 text-xs">{formik.errors.msisdnDetik}<span className="text-red-500">*</span></Label>
                                                 )
-                                            } 
+                                            }  */}
                                         </div>
                                     </div>
                                 </div>
