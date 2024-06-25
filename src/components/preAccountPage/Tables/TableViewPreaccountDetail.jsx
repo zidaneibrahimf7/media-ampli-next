@@ -26,7 +26,7 @@ export default function TableViewPreaccountDetail({data}){
                         data.platformLogin.map((v, i) => {
                             // console.log(v, i)
                             return (
-                                <TableRow>
+                                <TableRow key={i}>
                                     <TableCell>{data.email}</TableCell>
                                     <TableCell>{v.status === 1 ? <Badge variant="success">Available</Badge> : <Badge variant="danger">Not Available</Badge>}</TableCell>
                                     <TableCell>{v.platform}</TableCell>

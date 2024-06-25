@@ -1,0 +1,68 @@
+[
+        {
+            "KEY"       : "API_USER",
+            "SSL"       : false,
+            "HOST"      : "192.168.1.101",
+            "PORT"      : 21210,
+            "PATH"      : "/api",
+            "USERNAME"  : "mkidev",
+            "PASSWORD"  : "123",
+            "METHOD"    : "POST",
+            "TIMEOUT"   : 600000
+        },
+        {
+            "KEY"       : "API_CONTENT",
+            "SSL"       : false,
+            "HOST"      : "192.168.1.101",
+            "PORT"      : 21211,
+            "PATH"      : "/api",
+            "USERNAME"  : "mkidev",
+            "PASSWORD"  : "123",
+            "METHOD"    : "POST",
+            "TIMEOUT"   : 600000
+        },
+        {
+            "KEY"       : "API_PROJECT",
+            "SSL"       : false,
+            "HOST"      : "192.168.1.101",
+            "PORT"      : 21212,
+            "PATH"      : "/api",
+            "USERNAME"  : "mkidev",
+            "PASSWORD"  : "123",
+            "METHOD"    : "POST",
+            "TIMEOUT"   : 600000
+        },
+        {
+            "KEY"       : "API_AVATAR",
+            "SSL"       : false,
+            "HOST"      : "192.168.1.101",
+            "PORT"      : 21213,
+            "PATH"      : "/api",
+            "USERNAME"  : "mkidev",
+            "PASSWORD"  : "123",
+            "METHOD"    : "POST",
+            "TIMEOUT"   : 600000
+        },
+        {
+            "KEY"       : "API_TASK",
+            "SSL"       : false,
+            "HOST"      : "192.168.1.101",
+            "PORT"      : 21214,
+            "PATH"      : "/api",
+            "USERNAME"  : "mkidev",
+            "PASSWORD"  : "123",
+            "METHOD"    : "POST",
+            "TIMEOUT"   : 600000
+        },
+        {
+            "KEY"       : "API_CLUSTER",
+            "SSL"       : false,
+            "HOST"      : "192.168.1.101",
+            "PORT"      : 21215,
+            "PATH"      : "/api",
+            "USERNAME"  : "mkidev",
+            "PASSWORD"  : "123",
+            "METHOD"    : "POST",
+            "TIMEOUT"   : 600000
+        }
+    ]

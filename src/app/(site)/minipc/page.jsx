@@ -7,6 +7,7 @@ import Loading from '@/components/utilities/Loading'
 import InformationColor from '@/components/minipcPage/MiniPcInfo/InformationColor'
 import AddMiniPc from '@/components/minipcPage/FormsMiniPc/AddMiniPc'
 import MonitorPcList from '@/components/minipcPage/MonitorPcList'
+import { toastrError } from '@/helpers/Toaster'
 
 export default function Minipc() {
   const [miniPc, setMinipc] = useState({})
@@ -41,7 +42,11 @@ export default function Minipc() {
         setCountMinipc(content.count)
       }
     } catch (err) {
-      console.log('error message:::', err)
+      console.log('error message:', err)
+      toastrError('Data Fetch Error. Please contact admin!')
+      setMinipc([])
+      setCountMinipc(0)
+      setDone(true)
     }
 
   }
@@ -56,18 +61,18 @@ export default function Minipc() {
     <>
      <main className='rounded-sm py-3 m-5 bg-white items-center shadow-xl'>
         <h1 className='text-2xl font-semibold my-5 mx-3'>PC List</h1>
-        <InformationColor />
         {
           done ? 
           <section>
-           <div className='flex justify-between mx-4'>
-              <span className='mt-3'>Total: <span className='font-semibold'>{countMinipc} PC</span></span>
-              <AddMiniPc />
-           </div>
            <>
             {
               miniPc && countMinipc > 0 ?
               <>
+                <InformationColor />
+                <div className='flex justify-between mx-4'>
+                    <span className='mt-3'>Total: <span className='font-semibold'>{countMinipc} PC</span></span>
+                    <AddMiniPc />
+                </div>
                 <div className='grid grid-cols-12 p-2 gap-2 mt-1 mx-3'>
                   {
                     miniPc.map((v, i) => {

@@ -32,7 +32,7 @@ export default function TablePlatform({data}){
                             data.results.map((v, i) => {
                                 // console.log(v, i)
                                 return (
-                                    <TableRow className="hover:bg-white">
+                                    <TableRow className="hover:bg-white" key={i}>
                                         <TableCell>{v._id}</TableCell>
                                         <TableCell>{v.ip}</TableCell>
                                         <TableCell>{v.port}</TableCell>

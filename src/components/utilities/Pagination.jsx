@@ -22,7 +22,7 @@ export default function Pagination({length, limit, page, callback, siblingCount 
             if (pageNumber === DOTS || page === pageNumber) {
               return (
                 <li key={Math.floor(Math.random() * 10000)}>
-                  <a href={'javascript:void(0)'}
+                  <a href={'#!'}
                     className='cursor-not-allowed flex items-center justify-center px-3 h-8 leading-tight text-white bg-success border border-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white'
                     disabled
                     suppressHydrationWarning={true}
@@ -36,7 +36,7 @@ export default function Pagination({length, limit, page, callback, siblingCount 
 
             return (
               <li key={Math.floor(Math.random() * 10000)}>
-                <a href={'javascript:void(0)'}
+                <a href={'#!'}
                   className='flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-secondary dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
                   onClick={() => callback(pageNumber)}
                   suppressHydrationWarning={true}

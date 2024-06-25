@@ -3,6 +3,7 @@ import MainLayout from '@/components/layout/MainLayout'
 import "./globals.css";
 import { Toaster } from 'react-hot-toast'
 import Provider from './Providers';
+// import ReactQueryClientProvider from '@/components/ReactQueryClientProvider';
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +18,12 @@ export default function RootLayout({ children }) {
       //   <body className={inter.className}>{children}</body>
       // </html>
       <Provider>
-        <MainLayout>
-          <Toaster position='bottom-right' />
-          {children}
-        </MainLayout>
+        {/* <ReactQueryClientProvider> */}
+          <MainLayout>
+            <Toaster position='bottom-right' />
+            {children}
+          </MainLayout>
+        {/* </ReactQueryClientProvider> */}
       </Provider>
   );
 }

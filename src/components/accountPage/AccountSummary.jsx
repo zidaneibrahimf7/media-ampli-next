@@ -94,7 +94,7 @@ export default function AccountSummary() {
             </div>
             <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="facebook">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16' style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/facebook.png" layout='fill' objectFit='contain' alt='facebook' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16' style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/facebook.png" fill sizes='auto' style={{objectFit: 'contain'}} alt='facebook' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -148,7 +148,7 @@ export default function AccountSummary() {
             </div>
             <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="twitter">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/twitter.png" layout="fill" objectFit="contain" alt='twitter' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/twitter.png" fill sizes='auto'  style={{objectFit: "contain"}} alt='twitter' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -202,7 +202,7 @@ export default function AccountSummary() {
             </div>
             <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="instagram">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/instagram.png" layout='fill' objectFit='contain' alt='instagram' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/instagram.png" fill sizes='auto' style={{objectFit: 'contain'}} alt='instagram' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -256,7 +256,7 @@ export default function AccountSummary() {
             </div>
             <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="tiktok">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/tiktok.png" layout='fill' objectFit='contain' alt='tiktok' className='rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/tiktok.png" fill sizes='auto' style={{objectFit: 'contain'}} alt='tiktok' className='rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -310,7 +310,7 @@ export default function AccountSummary() {
             </div>
             <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="detik">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/detik.png" layout="fill" objectFit='contain' alt='detik' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/detik.png" fill sizes='auto' style={{objectFit: 'contain'}} alt='detik' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {
@@ -364,7 +364,7 @@ export default function AccountSummary() {
             </div>
             <div className='p-2 bg-secondary/50 rounded-lg shadow shadow-lg' name="kompas">
               <div className='grid grid-rows-4 gap-1'>
-                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/kompas.png" layout='fill' objectFit='contain' alt='kompas' className='flex justify-self-center rounded-full' /></div>
+                <div className='col-span-2 text-center px-16'  style={{width: '100%', height: '100%', position: 'relative'}}><Image src="/socmed/kompas.png" fill sizes='auto' style={{objectFit: 'contain'}} alt='kompas' className='flex justify-self-center rounded-full' /></div>
                 <div className='col-span-2 text-center'>
                   <Badge>Total Account</Badge>
                   {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import Image from 'next/image'
 
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from '@/components/ui/table'
@@ -52,8 +52,9 @@ export default function TablePreaccount({data}){
                                       <div className='relative col-span-1' style={{'width' : '27px', 'height' : '27px'}} key={platform._id}>
                                         <Image
                                             src={`/socmed/${platform.platform}.svg`}
-                                            layout='fill'
-                                            alt=''
+                                            fill
+                                            sizes='auto'
+                                            alt='...'
                                             className='rounded-full col-span-3'
                                         />
                                       </div>
@@ -63,7 +64,7 @@ export default function TablePreaccount({data}){
                                 }
                               })
                             return (
-                                <>
+                                <Fragment key={i}>
                                     <TableRow className={v.countDeactive === 6 ? 'bg-danger/50' : 'hover:bg-white'}>
                                         <TableCell>{moment.utc(v.dateCreate).format('YYYY-MM-DD HH:mm')}</TableCell>
                                         <TableCell>{v.email}</TableCell>
@@ -82,7 +83,7 @@ export default function TablePreaccount({data}){
                                             </div>
                                         </TableCell>
                                     </TableRow>
-                                </>
+                                </Fragment>
                             )
                         })
                     }

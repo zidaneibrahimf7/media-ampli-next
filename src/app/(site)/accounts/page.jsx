@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState, useEffect, useReducer} from 'react'
+import React, {useState, useEffect, useReducer, Fragment} from 'react'
 import Image from 'next/image'
 
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from '@/components/ui/table'
@@ -253,7 +253,7 @@ export default function AccountsPage() {
                                     // }
 
                                     // const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image loader={myLoader} src={`http://192.168.1.101:21215/api/Media/getProfilePicture/${value.profilePicture}`} layout='fill' objectFit='cover' className="rounded-full" /></div>
-                                    const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image src={`/api/media/profilePicture/${value.profilePicture}`} layout='fill' objectFit='cover' className="rounded-full" /></div>
+                                    const nameWithProfilePicture = <div className='relative' style={{'height' : '40px', 'width' : '40px'}}><Image src={`/api/media/profilePicture/${value.profilePicture}`} fill sizes="auto" style={{objectFit: 'cover'}} className="rounded-full" alt="..." /></div>
                                     
                                     // console.log(value.status)
                                     // console.log(value.statusActive)
@@ -273,7 +273,7 @@ export default function AccountsPage() {
                                     }
           
                                     return (
-                                      <>
+                                      <Fragment key={index}>
                                         <TableRow className="hover:bg-white" key={index}>
                                           <TableCell><div className='flex gap-2'>{nameWithProfilePicture}<span className="mt-2">{value.name}</span></div></TableCell>
                                           <TableCell>{value.id ? value.id : " "}</TableCell>
@@ -282,7 +282,7 @@ export default function AccountsPage() {
                                           <TableCell>{value.platform ? value.platform : " "}</TableCell>
                                           <TableCell>{value.lastActivity? moment.utc(value.lastActivity).format('YYYY-MM-DD HH:mm') : "-"}</TableCell>
                                         </TableRow>
-                                      </>
+                                      </Fragment>
                                     )
                                   })
                                 }

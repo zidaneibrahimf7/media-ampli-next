@@ -16,6 +16,7 @@ import Pagination from '@/components/utilities/Pagination'
 import { useSession } from 'next-auth/react'
 
 import TableDevicePage from '@/components/devicePage/TableDevicePage'
+import { toastrError, toastrWarning } from '@/helpers/Toaster';
 
 export default function DevicesPage() {
   const [devices, setDevices] = useState({})
@@ -40,30 +41,42 @@ export default function DevicesPage() {
         "search": searchDevices ? searchDevices : ""
       }
 
-      let response = await fetch('/api/Device?act=devices', {
-        method: "POST",
-        mode: 'cors',
-        cache: 'default',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-      })
+      try {
+          let response = await fetch('/api/Device?act=devices', {
+              method: "POST",
+              mode: 'cors',
+              cache: 'default',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(params)
+          })
+
       // console.log(response)
+        const data = await response.json()
+        // console.log(data, 'sugoiii')
+        setDone(true)
 
-      const data = await response.json()
-      // console.log(data, 'sugoiii')
-      setDone(true)
+        let { code, content } = data
+        // console.log(content, code)
 
-      let { code, content } = data
-      // console.log(content, code)
+        if (page !== currentPage) setPage(page)
 
-      if (page !== currentPage) setPage(page)
-
-      if(code === 0 && content.results) {
-        setDevices(content)
-        setCountDevices(content.count)
+        if(code === 0 && content.results) {
+          setDevices(content)
+          setCountDevices(content.count)
+        } else {
+          toastrWarning('Data Fetch Error!')
+          setDevices([])
+          setCountDevices(0)
+        }
+      } catch (error) {
+        console.error('Error Message:', error)
+        toastrError('Error Fetching Data. Please contact admin!')
+        setDevices([])
+        setCountDevices(0)
       }
+
     }
 
     useEffect(() => {
