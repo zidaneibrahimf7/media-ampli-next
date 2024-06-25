@@ -6,7 +6,7 @@ export async function GET(req, {params}) {
     // console.log(params)
 
     // const apiUrl = 'https://picsum.photos/id/12/500/500' // image url
-    const apiUrl = `http://2.250.10.1:21215/api/Media/getProfilePicture/${params.file}`
+    const apiUrl = `http://${process.env.API_HOST}/api/Media/getProfilePicture/${params.file}`
     // console.log(apiUrl, 'apii')
     const response = await fetch(apiUrl, {
         next: { revalidate: 3600 }
