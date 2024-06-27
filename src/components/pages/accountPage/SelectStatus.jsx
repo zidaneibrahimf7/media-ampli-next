@@ -1,10 +1,11 @@
 import React from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function SelectStatus({onChangeStatus}){
   return (
     <>
-        <div>
+      <div>
         <Select onValueChange={onChangeStatus}>
             <SelectTrigger className="w-auto mt-4"><SelectValue/></SelectTrigger>
             <SelectContent>
@@ -15,7 +16,7 @@ export default function SelectStatus({onChangeStatus}){
                 <SelectItem value='not_available' key='not_available'>Banned</SelectItem>
             </SelectContent>
         </Select>
-        </div>
+      </div>
     </>
   )
 }

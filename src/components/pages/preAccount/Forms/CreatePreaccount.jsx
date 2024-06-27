@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { Label } from '@radix-ui/react-label'
 import { Input } from '@/components/ui/input'
@@ -12,9 +12,11 @@ import SelectSingle from '@/components/utilities/select'
 
 import { UserRoundPlus, Eye, EyeOff, Send } from 'lucide-react';
 import { toastrSuccess } from '@/helpers/Toaster'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 
 export default function CreatePreaccount(){
+    const [isOpen, setIsOpen] = useState(false)
 
     const [statusSelectInstagram, setStatusSelectInstagram] = useState(1)
     const [statusSelectFacebook, setStatusSelectFacebook] = useState(1)
@@ -60,7 +62,7 @@ export default function CreatePreaccount(){
 
             // Memisahkan berdasarkan baris dan bergabungkan dengan koma
             const backupCodeArray = values.backupCode
-            .split('\n') // Pisahkan berdasarkan newline
+            .split(/[\s,]+/) // Pisahkan berdasarkan koma atau whitespace (termasuk newline)
             .map(line => line.replace(/\s/g, '')) // Hapus spasi di setiap baris
             .filter(Boolean); // Hapus baris kosong
         
@@ -115,29 +117,30 @@ export default function CreatePreaccount(){
               }
         
             //   console.log('params: ', params)
+              mutate(params)
 
-            let response = await fetch('/api/Preaccount?act=createPreaccount', {
-                method: "POST",
-                mode: 'cors',
-                cache: 'default',
-                // credentials: 'same-origin',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(params)
-              })
+            // let response = await fetch('/api/Preaccount?act=createPreaccount', {
+            //     method: "POST",
+            //     mode: 'cors',
+            //     cache: 'default',
+            //     // credentials: 'same-origin',
+            //     headers: {
+            //       'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify(params)
+            //   })
         
-              const data = await response.json()
+            //   const data = await response.json()
         
-              const { code, content, message} = data
+            //   const { code, content, message} = data
         
-              // console.log(data, 'data')
+            //   // console.log(data, 'data')
         
-              if(code === 0 && content) {
-                toastrSuccess(message)
-              }
+            //   if(code === 0 && content) {
+            //     toastrSuccess(message)
+            //   }
 
-              setTimeout(() => location.reload(), 2000)
+            //   setTimeout(() => location.reload(), 2000)
         }
     })
 
@@ -151,12 +154,37 @@ export default function CreatePreaccount(){
         { value: "0", label: "Not Available",  isdisabled: true }
       ]
 
+      const [alertMessage, setAlertMessage] = useState('Register Preaccount Success!')
+      const client = useQueryClient()
+      const {mutate, isPending} = useMutation({
+            mutationFn: async(params) => {
+                const url = '/api/Preaccount?act=createPreaccount'
+                // console.log(url, params, ':YUUKK')
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(params),
+                    mode: 'cors',
+                    cache: 'default'
+              })
+
+              const result = await response.json()
+              // console.log(result)
+              const {code, content, message} = result
+              // console.log(response, '::responseMutation')
+              setAlertMessage(message)
+              if(code === 0) return result
+            },
+            onSuccess: (data) => {
+              client.invalidateQueries({queryKey: ['preaccount']}),
+              toastrSuccess(alertMessage)
+            }
+      })
   return (
     <>
         <main className='mx-3 px-1'>
-            <Dialog>
+            <Dialog open={isOpen}>
                 <DialogTrigger asChild>
-                    <Button variant="success" className="text-lg flex gap-2"><UserRoundPlus size={24} />Create Preaccount</Button>
+                    <Button variant="success" className="text-lg flex gap-2" onClick={() => setIsOpen(true)}><UserRoundPlus size={24} />Create Preaccount</Button>
                 </DialogTrigger>
                 <DialogContent className="w-full overflow-y-scroll max-h-screen" style={{ width: '100%', maxWidth: '65rem' }}>
                     <DialogHeader>
@@ -382,9 +410,13 @@ export default function CreatePreaccount(){
                             </div>
 
                         </section>
-                        <div className=''>
+                        <DialogFooter className={'flex gap-2'}>
+                            <Button type="button" variant="outline" className="bg-white" onClick={() => setIsOpen(false)}>Close</Button>
+                            <Button type='submit' variant="success" className="flex gap-2" onClick={() => setIsOpen(false)}><Send size={18} />Submit</Button>
+                        </DialogFooter>
+                        {/* <div className=''>
                             <Button type='submit' variant="success" className="w-full flex gap-2"><Send size={18} />Submit</Button>
-                         </div>
+                         </div> */}
                     </form>
                 </DialogContent>
             </Dialog>

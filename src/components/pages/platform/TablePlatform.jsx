@@ -11,6 +11,7 @@ import moment from 'moment'
 import UpdatePlatforms from './UpdatePlatforms'
 
 export default function TablePlatform({data}){
+    // console.log(data, '::data::')
 
     return (
         <main>

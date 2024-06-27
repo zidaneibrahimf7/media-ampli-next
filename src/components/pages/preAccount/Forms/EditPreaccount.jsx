@@ -12,19 +12,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter
 } from "@/components/ui/dialog"
-import { Button } from '../../ui/button'
+import { Button } from '../../../ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
 import { UserRoundPlus, Eye, EyeOff, Send } from 'lucide-react';
 import { toastrSuccess } from '@/helpers/Toaster'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 
 export default function UpdatePreaccount({data}){
   // console.log(data, '::editData::')
   const valueUpdate = data
+
+  const [isOpen, setIsOpen] = useState(false)
 
   const [statusSelectKompasUpdate, setStatusSelectKompasUpdate] = useState('')
   const [statusSelectTiktokUpdate, setStatusSelectTiktokUpdate] = useState('')
@@ -55,17 +59,15 @@ export default function UpdatePreaccount({data}){
       setSubmitting(false);
 
     // Memisahkan berdasarkan baris dan bergabungkan dengan koma
-    // const backupCodeArrayUpdate = values.backupCodeUpdate
-    // .split('\n') // Pisahkan berdasarkan newline
-    // .map(line => line.replace(/\s/g, '')) // Hapus spasi di setiap baris
-    // .filter(Boolean); // Hapus baris kosong
-  
-    // console.log('Backup Code Array:', backupCodeArrayUpdate);
+    const backupCodeArrayUpdate = values.backupCodeUpdate
+      .split(/[\s,]+/) // Pisahkan berdasarkan newline
+      .map(line => line.replace(/\s/g, '')) // Hapus spasi di setiap baris
+      .filter(Boolean); // Hapus baris kosong
 
       let params = {
         email: values.emailUpdate,
         password: values.passwordUpdate,
-        backupCode: values.backupCodeUpdate,
+        backupCode: backupCodeArrayUpdate,
         platform_login: [
           {
             status: statusSelectInstagramUpdate ? +statusSelectInstagramUpdate : (valueUpdate?.platformLogin?.find(v => v.platform === 'instagram') || {}).status ,
@@ -105,29 +107,32 @@ export default function UpdatePreaccount({data}){
           }
         ]
       }
+      
 
       // console.log('params: ', params)
-      let response = await fetch('/api/Preaccount?act=updatePreaccount', {
-        method: "POST",
-        mode: 'cors',
-        cache: 'default',
-        // credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-      })
+      mutate(params)
 
-      const data = await response.json()
-      // console.log(data, 'data')
+      // let response = await fetch('/api/Preaccount?act=updatePreaccount', {
+      //   method: "POST",
+      //   mode: 'cors',
+      //   cache: 'default',
+      //   // credentials: 'same-origin',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify(params)
+      // })
 
-      const { code, content, message} = data
+      // const data = await response.json()
+      // // console.log(data, 'data')
 
-      if(code === 0 && content) {
-        toastrSuccess(message)
-      }
+      // const { code, content, message} = data
 
-      setTimeout(() => location.reload(), 2000)
+      // if(code === 0 && content) {
+      //   toastrSuccess(message)
+      // }
+
+      // setTimeout(() => location.reload(), 2000)
     }
   })
 
@@ -141,12 +146,41 @@ export default function UpdatePreaccount({data}){
     { value: "0", label: "Not Available",  isdisabled: true }
   ]
 
+  const [alertMessage, setAlertMessage] = useState('Update Preaccount Success!')
+  const client = useQueryClient()
+  const {mutate} = useMutation({
+    mutationFn: async (params) => {
+      const url = '/api/Preaccount?act=updatePreaccount'
+      const response = await fetch(url, {
+            method: "POST",
+            mode: 'cors',
+            cache: 'default',
+            // credentials: 'same-origin',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+      })
+      const result = await response.json()
+
+      const {code, content, message} = result
+
+      setAlertMessage(message)
+
+      if(code === 0) return result
+    },
+    onSuccess: (data) => {
+      client.invalidateQueries({queryKey: ['preaccount']})
+      toastrSuccess(alertMessage)
+    }
+  })
+
   return (
     <>
         <main>
-        <Dialog>
+        <Dialog open={isOpen}>
           <DialogTrigger asChild>
-            <Button variant="success">Edit Preaccount</Button>
+            <Button variant="success" onClick={() => setIsOpen(true)}>Edit Preaccount</Button>
           </DialogTrigger>
           <DialogContent className="w-full" style={{ width: '100%', maxWidth: '65rem', height: 'auto' }}>
             <DialogHeader>
@@ -560,9 +594,13 @@ export default function UpdatePreaccount({data}){
                     </div>
                   </div>
                 </section>
-                <div className=''>
+                <DialogFooter className={'flex gap-2'}>
+                    <Button type="button" variant="outline" className="bg-white" onClick={() => setIsOpen(false)}>Close</Button>
+                    <Button type='submit' variant="success" className="flex gap-2" onClick={() => setIsOpen(false)}><Send size={18} />Submit</Button>
+                </DialogFooter>
+                {/* <div className=''>
                   <Button type='submit' variant="success" className="w-full">Submit</Button>
-                </div>
+                </div> */}
               </form>
             </DialogHeader>
           </DialogContent>

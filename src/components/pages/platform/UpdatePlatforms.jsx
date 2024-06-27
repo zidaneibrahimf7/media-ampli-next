@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-import { Dialog, DialogContent,DialogDescription, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog"
+import { Dialog, DialogContent,DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogFooter} from "@/components/ui/dialog"
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -14,13 +14,14 @@ import { FolderSync, Send } from 'lucide-react'
 import Loading from '@/components/utilities/Loading'
 
 import { toastrSuccess, toastrWarning } from '@/helpers/Toaster'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export default function UpdatePlatforms({data}){
-
     // console.log(data, '::data::')
-
+    const [isOpen, setIsOpen] = useState(false)
+    
     const handleSubmit = async (values) => {
-        console.log(values)
+        // console.log(values)
     
         const { platformId, activeAccountThreshold} = values
     
@@ -30,23 +31,26 @@ export default function UpdatePlatforms({data}){
         }
     
         try {
-          const response = await fetch('/api/Platform?act=active-threshold', {
-            method: 'POST',
-            body: JSON.stringify(params),
-            mode: 'cors',
-            cache: 'default'
-          })
+          // console.log(params, '::params::')
+          mutate(params)
+
+          // const response = await fetch('/api/Platform?act=active-threshold', {
+          //   method: 'POST',
+          //   body: JSON.stringify(params),
+          //   mode: 'cors',
+          //   cache: 'default'
+          // })
     
-          const data = await response.json()
+          // const data = await response.json()
     
-          const {code, content, message} = data
+          // const {code, content, message} = data
     
-           if(code === 0) {
-            toastrSuccess(message)
-            setTimeout(() => location.reload(), 2000)
-          } else {
-            toastrWarning(message)
-          }
+          //  if(code === 0) {
+          //   toastrSuccess(message)
+          //   setTimeout(() => location.reload(), 2000)
+          // } else {
+          //   toastrWarning(message)
+          // }
     
         } catch (err) {
           console.log('error message:', err)
@@ -57,11 +61,35 @@ export default function UpdatePlatforms({data}){
         activeAccountThreshold: Yup.number().min(1, 'Nilai harus lebih besar dari 0').required('Field ini harus diisi'),
       });
 
+      const client = useQueryClient()
+      const { mutate, isPending } = useMutation({
+          mutationFn: async(params) => {
+              // console.log(params, '::paramsMutation')
+              const url = '/api/Platform?act=active-threshold'
+              const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(params),
+                mode: 'cors',
+                cache: 'default'
+              })
+
+              const result = await response.json()
+              // console.log(result)
+              const {code, content, message} = result
+              // console.log(response, '::responseMutation')
+              if(code === 0) return result
+          }, 
+          onSuccess: (data) => {
+              client.invalidateQueries({queryKey: ['platform']}),
+              toastrSuccess("Set active account threshold success")
+          }
+      })
+
   return (
     <>
-    <Dialog>
-        <DialogTrigger><Button variant="success" className="flex gap-2"><FolderSync size={20} />Update Data</Button></DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={isOpen}>
+        <DialogTrigger onClick={() => setIsOpen(true)}><Button variant="success" className="flex gap-2"><FolderSync size={20} />Update Data</Button></DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]" >
             <DialogHeader>
                 <DialogTitle>Update Data</DialogTitle>
                     <DialogDescription>
@@ -86,9 +114,14 @@ export default function UpdatePlatforms({data}){
                                         <small className='text-danger'>{errors.activeAccountThreshold}<span className='text-red'>*</span></small>
                                     )
                                 }
-                            <div className='flex justify-end mt-4'>
-                                <Button type="submit" variant="success" className="flex gap-2"><Send size={20} />Submit</Button>
-                            </div>
+                            {/* <DialogFooter> */}
+                              <div className='flex justify-end mt-4 gap-2'>
+                                    <DialogClose asChild>
+                                        <Button type="button" onClick={() => setIsOpen(false)}>Cancel</Button>
+                                    </DialogClose>
+                                    <Button type="submit" variant="success" className="flex gap-2" onClick={() => setIsOpen(false)}><Send size={20} />Submit</Button>
+                              </div>
+                            {/* </DialogFooter> */}
                         </Form>
                     </div>
                 )}
