@@ -178,7 +178,7 @@ export default function UpdatePreaccount({data}){
   return (
     <>
         <main>
-        <Dialog open={isOpen}>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button variant="success" onClick={() => setIsOpen(true)}>Edit Preaccount</Button>
           </DialogTrigger>

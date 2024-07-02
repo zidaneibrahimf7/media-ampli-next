@@ -3,12 +3,18 @@
 import moment from 'moment'
 import React from 'react'
 import UpdatePlatforms from '../UpdatePlatforms'
+import Image from 'next/image'
 
 
 export const columnsPlatforms = [
      {
           header: 'Platform',
-          accessorKey: '_id'
+          accessorKey: '_id', 
+          cell: (item) => {
+               const platform = item.getValue()
+               const iconPlatfrom = <Image src={`/socmed/${platform}.svg`} width={50} height={50} className='rounded-full' />
+               return iconPlatfrom
+          }
      },
      {
           header: 'IP',

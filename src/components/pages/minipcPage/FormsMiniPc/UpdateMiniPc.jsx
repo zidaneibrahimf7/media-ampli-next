@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 import {
     Dialog,
@@ -17,9 +17,14 @@ import { Formik, Form, Field, FieldArray } from 'formik'
 import { Send, Pencil} from 'lucide-react'
 
 import toast from 'react-hot-toast';
+import Modal from '@/components/custom/Modal'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toastrSuccess, toastrWarning } from '@/helpers/Toaster'
 
 export default function UpdateMiniPc({data}){
     // console.log(data, '::datass')
+    const [isOpen, setIsOpen] = useState(false)
+
     const handleSubmit = async (values) => {
     // console.log(values, '::valuesss')
         const {name, ipAddress, miniPcId, port} = values
@@ -32,60 +37,93 @@ export default function UpdateMiniPc({data}){
         }
 
         // console.log('params:::', params)
-        try {
-            const response = await fetch('/api/Device?act=update-minipc', {
-                method: 'POST',
-                body: JSON.stringify(params),
-                mode: 'cors',
-                cache: 'default'
-              })
+        mutate(params)
+        // try {
+        //     const response = await fetch('/api/Device?act=update-minipc', {
+        //         method: 'POST',
+        //         body: JSON.stringify(params),
+        //         mode: 'cors',
+        //         cache: 'default'
+        //       })
         
-              const data = await response.json()
-              // console.log(data, 'adas')
+        //       const data = await response.json()
+        //       // console.log(data, 'adas')
         
-              let {code, content, message} = data
+        //       let {code, content, message} = data
 
-              if(code === 0) {
-                toast.success(message, {
-                  style: {
-                    border: '1px solid #55CD6C',
-                    padding: '12px',
-                    color: '#FFFAEE',
-                    backgroundColor: '#55CD6C'
-                  },
-                  iconTheme: {
-                    primary: '#FFFAEE',
-                    secondary: '#55CD6C',
-                  },
-                })
-                setTimeout(() => location.reload(), 2000)
-              } else {
-                toast.error(message, {
-                  style: {
-                    border: '1px solid hsl(0 100% 64%)',
-                    padding: '12px',
-                    color: '#FFFAEE',
-                    backgroundColor: 'hsl(0 100% 64%)'
-                  },
-                  iconTheme: {
-                    primary: '#FFFAEE',
-                    secondary: 'hsl(0 100% 64%)'
-                  },
-                })
-              }
+        //       if(code === 0) {
+        //         toast.success(message, {
+        //           style: {
+        //             border: '1px solid #55CD6C',
+        //             padding: '12px',
+        //             color: '#FFFAEE',
+        //             backgroundColor: '#55CD6C'
+        //           },
+        //           iconTheme: {
+        //             primary: '#FFFAEE',
+        //             secondary: '#55CD6C',
+        //           },
+        //         })
+        //         setTimeout(() => location.reload(), 2000)
+        //       } else {
+        //         toast.error(message, {
+        //           style: {
+        //             border: '1px solid hsl(0 100% 64%)',
+        //             padding: '12px',
+        //             color: '#FFFAEE',
+        //             backgroundColor: 'hsl(0 100% 64%)'
+        //           },
+        //           iconTheme: {
+        //             primary: '#FFFAEE',
+        //             secondary: 'hsl(0 100% 64%)'
+        //           },
+        //         })
+        //       }
 
-        } catch (error) {
-            console.error('error message:' , error)
-        }
+        // } catch (error) {
+        //     console.error('error message:' , error)
+        // }
     }
+
+    const client = useQueryClient()
+    const {mutate} = useMutation({
+      mutationFn: async (params) => {
+        // console.log(params, '::mutateParams::')
+        const url = '/api/Device?act=update-minipc'
+        const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              mode: 'cors',
+              cache: 'default',
+              body: JSON.stringify(params)
+        })
+
+        const result = await response.json()
+
+        return result
+
+      },
+      onSuccess: (data) => {
+        if(data.code === 0){
+          client.invalidateQueries({queryKey: ['miniPc']})
+          toastrSuccess(data.message)
+          setIsOpen(false)
+        } else {
+          toastrWarning(data.message)
+        }
+      }
+    })
 
   return (
     <main>
-        <Dialog>
-            <DialogTrigger asChild><Button variant='' type="button"><Pencil size={20} /></Button></DialogTrigger>
-            <DialogContent>
-                <DialogHeader><DialogTitle>Update Mini PC</DialogTitle></DialogHeader>
-                <Formik
+        <Modal
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          trigger={<Button variant='' type="button" onClick={() => setIsOpen(true)}><Pencil size={20} /></Button>}
+          title={'Update Mini PC'}
+          content={ <Formik
                     initialValues={{
                         name: data.name,
                         ipAddress: data.ipAddress,
@@ -123,8 +161,10 @@ export default function UpdateMiniPc({data}){
                         </Form>
                     )}
                 </Formik>
-            </DialogContent>
-        </Dialog>
+                }
+          fontSizeTitle={'20px'}
+        
+        />
     </main>
   )
 }

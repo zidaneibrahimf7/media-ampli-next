@@ -182,7 +182,7 @@ export default function CreatePreaccount(){
   return (
     <>
         <main className='mx-3 px-1'>
-            <Dialog open={isOpen}>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                     <Button variant="success" className="text-lg flex gap-2" onClick={() => setIsOpen(true)}><UserRoundPlus size={24} />Create Preaccount</Button>
                 </DialogTrigger>

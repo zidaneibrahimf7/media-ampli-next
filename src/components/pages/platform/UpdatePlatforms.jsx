@@ -87,7 +87,7 @@ export default function UpdatePlatforms({data}){
 
   return (
     <>
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger onClick={() => setIsOpen(true)}><Button variant="success" className="flex gap-2"><FolderSync size={20} />Update Data</Button></DialogTrigger>
         <DialogContent className="sm:max-w-[425px]" >
             <DialogHeader>
