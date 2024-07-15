@@ -140,7 +140,7 @@ export const ColumnsDeviceList = [
                                    fontSizeTitle={'90px'}
                                    content={<DeviceMonitoring id={dataKey._id} port={port} ip={ip} />}
                                    open={isOpen}
-                                   classNameBox={'overflow-y-auto h-[53rem]'}
+                                   classNameBox={'overflow-y-auto h-[54.7rem]'}
                                    onOpenChange={setIsOpen}
                                    width={'105rem'}
                                    onEscapeKeyDown={(e) => keyEscPress(e)}
