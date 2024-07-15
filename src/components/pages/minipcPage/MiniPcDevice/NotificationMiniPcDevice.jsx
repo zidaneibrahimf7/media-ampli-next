@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import Loading from '@/components/utilities/Loading'
 import { useQuery } from '@tanstack/react-query'
-import React, {useState, useEffect } from 'react'
+import React, {useState, useEffect, Fragment } from 'react'
 
 export default function NotificationMiniPcDevice({id}){
     // console.log(id, ':idd')
@@ -84,12 +84,12 @@ export default function NotificationMiniPcDevice({id}){
                         !isLoading ?
                         <>
                          {
-                            notificationDataList.content.results.map((notif) => {
+                            notificationDataList.content.results.map((notif, index) => {
                                 // console.log(notif, ':notif:')
                                 return (
-                                    <>
+                                    <Fragment key={index}>
                                          <p className='text-sm bg-slate-100 rounded-full p-1 my-2'>{notif}</p>
-                                    </>
+                                    </Fragment>
                                 )
                             })
                         }
@@ -97,7 +97,7 @@ export default function NotificationMiniPcDevice({id}){
                         :
                         <>
                         {Array.from({ length: 3 }).map((_, index) => (
-                            <div className='flex justify-between'>
+                            <div className='flex justify-between' key={index}>
                                 <Skeleton className="h-4 w-[70%] m-2 p-2" />
                                 <Skeleton className="h-4 w-[70%] m-2 p-2" />
                             </div>
@@ -111,35 +111,7 @@ export default function NotificationMiniPcDevice({id}){
                     </div>
                 }
             </div>
-
           </div>
-            {/* {
-                notification.results?.length && notification.count > 0 ?
-                <>
-                 <div className='m-2 h-fit max-h-80 overflow-y-auto relative'>
-                    <div>
-                        <h1 className='font-bold text-xl'>Notification</h1>
-                    </div>
-                        {
-                            notification.results.map((notif) => {
-                                // console.log(notif, ':notif:')
-                                return (
-                                    <>
-                                         <p className='text-sm bg-slate-100 rounded-full p-1 my-2'>{notif}</p>
-                                    </>
-                                )
-                            })
-                        }
-                </div>
-                </>
-                :
-                done ?
-                <>
-                    <div className='flex justify-center'>Notification is not available</div>
-                </>
-                :
-                <div className='flex justify-center'><Loading /></div>
-            } */}
         </main>
     </>
   )

@@ -12,7 +12,7 @@ export const columnsPlatforms = [
           accessorKey: '_id', 
           cell: (item) => {
                const platform = item.getValue()
-               const iconPlatfrom = <Image src={`/socmed/${platform}.svg`} width={50} height={50} className='rounded-full' />
+               const iconPlatfrom = <div className='relative' style={{width: '50px', height: '50px'}}><Image src={`/socmed/${platform}.svg`} sizes='auto' fill style={{objectFit: 'obtain'}} className='rounded-full' alt="...." /></div>
                return iconPlatfrom
           }
      },

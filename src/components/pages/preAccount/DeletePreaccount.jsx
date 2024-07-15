@@ -84,7 +84,7 @@ export default function DeletePreaccount({email}) {
     return (
         <>
           <AlertDialog open={isOpen}>
-            <AlertDialogTrigger><Button variant="danger" onClick={() => setIsOpen(true)}>Delete Preaccount</Button></AlertDialogTrigger>
+            <AlertDialogTrigger asChild><Button variant="danger" onClick={() => setIsOpen(true)}>Delete Preaccount</Button></AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you sure want to delete {email} ?</AlertDialogTitle>

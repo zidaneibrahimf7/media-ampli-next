@@ -1,14 +1,16 @@
 'use client'
 
 
+import Modal from '@/components/custom/Modal'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { firstCase } from '@/helpers/Helpers'
 import { toastrSuccess } from '@/helpers/Toaster'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Construction, MonitorCheck } from 'lucide-react'
+import { Construction, MonitorCheck, Smartphone} from 'lucide-react'
 import moment from 'moment'
-import React from 'react'
+import React, { useState } from 'react'
+import DeviceMonitoring from '../DeviceMonitoring'
 
 
 export const ColumnsDeviceList = [
@@ -69,6 +71,11 @@ export const ColumnsDeviceList = [
                // console.log(id, '::id::')
                const statusMaintenance = dataKey.isMaintenance
 
+               const keyIpPort = dataKey.deviceIpPort.split(':')
+               // console.log(keyIpPort)
+               const port = keyIpPort[1]
+               const ip = keyIpPort[0]
+
                const client = useQueryClient()
 
                const changeStatus = async (id, statusMaintenance) => {
@@ -101,17 +108,53 @@ export const ColumnsDeviceList = [
                          toastrSuccess((statusMaintenance === 1 ? 'Set active success' : 'Set maintenance success'))
                     }
                })
+
+               const [isOpen, setIsOpen] = useState(false)
+
+               function keyEscPress(e){
+                    e.preventDefault()
+                    // console.log(e)
+                    if(e.key === "Escape") {
+                         setIsOpen(true)
+                    }
+               }
+
                return (
-                    <Button
-                         variant={statusMaintenance === 0 ? 'warning' : 'success'}
-                         onClick={() => changeStatus(id, statusMaintenance)}
-                    >{
-                         statusMaintenance === 0 ?
-                          <div className='flex items-center gap-2'><Construction size={22} className="" />Set Maintenance</div>
-                          :
-                           <div className='flex items-center gap-2'><MonitorCheck size={22} className="" />Set Active</div>
-                     }
-                    </Button>
+                    <div className='flex gap-2'>
+                         <div>
+                              <Button
+                                   variant={statusMaintenance === 0 ? 'warning' : 'success'}
+                                   onClick={() => changeStatus(id, statusMaintenance)}
+                              >{
+                                   statusMaintenance === 0 ?
+                                   <div className='flex items-center gap-2'><Construction size={22} className="" />Set Maintenance</div>
+                                   :
+                                   <div className='flex items-center gap-2'><MonitorCheck size={22} className="" />Set Active</div>
+                              }
+                              </Button>
+                         </div>
+                         <div>
+                              <Modal 
+                                   trigger={<Button className="flex gap-2"><Smartphone />View Devices</Button>}
+                                   title={`View Device "${dataKey._id}"`}
+                                   fontSizeTitle={'90px'}
+                                   content={<DeviceMonitoring id={dataKey._id} port={port} ip={ip} />}
+                                   open={isOpen}
+                                   classNameBox={'overflow-y-auto h-[53rem]'}
+                                   onOpenChange={setIsOpen}
+                                   width={'105rem'}
+                                   onEscapeKeyDown={(e) => keyEscPress(e)}
+                                   onInteractOutside={(e) => {
+                                        e.preventDefault()
+                                        let {className} = e.target
+                                        if(e){
+                                             setIsOpen(true)
+                                        }
+                                   }}
+                              />
+                         </div>
+
+                    </div>
                )
           }
      }

@@ -116,7 +116,7 @@ export default function DeleteMiniPc({data, miniPcId, closeModal}){
   return (
     <main>
         <AlertDialog>
-            <AlertDialogTrigger><Button type='button' variant='danger'><Trash2 /></Button></AlertDialogTrigger>
+            <AlertDialogTrigger asChild><Button type='button' variant='danger'><Trash2 /></Button></AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure want to delete this PC ?</AlertDialogTitle>          

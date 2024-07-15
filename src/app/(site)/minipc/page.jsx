@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 
 import Loading from '@/components/utilities/Loading'
 
@@ -119,9 +119,9 @@ export default function Minipc() {
                         statusPc = 'backgroundPc'
                       }
                       return (
-                        <>
+                        <Fragment key={ind}>
                           <MonitorPcList data={val} key={ind} status={statusPc} loadingAdd={loadingAdd} />
-                        </>
+                        </Fragment>
                       )
                     })
                   }

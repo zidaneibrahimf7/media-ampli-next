@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 
 import {
     Table,
@@ -50,14 +50,14 @@ export default function TableMiniPcDeviceList({id, data, count, isLoading}){
                             }
 
                             return (
-                                <>
+                                <Fragment key={i}>
                                      <TableRow className={`bg-${statusDevice}`} key={i}>
                                         <TableCell className="">{v.deviceId}</TableCell>
                                         <TableCell>{v.ipAddress}</TableCell>
                                         <TableCell>{v.port}</TableCell>
                                         <TableCell>{firstCase(v.status)}</TableCell>
                                     </TableRow>
-                                </>
+                                </Fragment>
                             )
                         })
                     }
@@ -72,7 +72,7 @@ export default function TableMiniPcDeviceList({id, data, count, isLoading}){
                             :
                             <>
                                 {Array.from({ length: 3 }).map((_, index) => (
-                                    <TableRow>
+                                    <TableRow key={index}>
                                         <TableCell className='' colSpan={2}>
                                                 <Skeleton className="h-4 w-[70%]" />
                                         </TableCell>

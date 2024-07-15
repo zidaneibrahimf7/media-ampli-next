@@ -117,7 +117,7 @@ import Tooltip from '@/components/custom/Tooltip'
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                       <Tooltip 
-                        trigger={<button className='text-center' onClick={() => handleGetMiniPcDevice(data.miniPcId)} onAppl>
+                        trigger={<button className='text-center' onClick={() => handleGetMiniPcDevice(data.miniPcId)}>
                                       <Monitor size={40} className='text-secondary ml-3' />
                                       <Badge variant={'secondary'}>{truncate(data.name, 6)}</Badge>
                                   </button>
