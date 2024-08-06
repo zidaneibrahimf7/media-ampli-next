@@ -96,6 +96,9 @@ export const ColumnsDeviceList = [
                const port = keyIpPort[1]
                const ip = keyIpPort[0]
 
+               const status = dataKey.status
+               // console.log(status)
+
                const client = useQueryClient()
 
                const changeStatus = async (id, statusMaintenance) => {
@@ -140,41 +143,48 @@ export const ColumnsDeviceList = [
                }
 
                return (
-                    <div className='flex gap-2'>
-                         <div>
-                              <Button
-                                   variant={statusMaintenance === 0 ? 'warning' : 'success'}
-                                   onClick={() => changeStatus(id, statusMaintenance)}
-                              >{
-                                   statusMaintenance === 0 ?
-                                   <div className='flex items-center gap-2'><Construction size={22} className="" />Set Maintenance</div>
-                                   :
-                                   <div className='flex items-center gap-2'><MonitorCheck size={22} className="" />Set Active</div>
-                              }
-                              </Button>
-                         </div>
-                         <div>
-                              <Modal 
-                                   trigger={<Button className="flex gap-2"><Smartphone />View Devices</Button>}
-                                   title={`View Device "${dataKey._id}"`}
-                                   fontSizeTitle={'90px'}
-                                   content={<DeviceMonitoring id={dataKey._id} port={port} ip={ip} />}
-                                   open={isOpen}
-                                   classNameBox={'overflow-y-auto h-[54.7rem]'}
-                                   onOpenChange={setIsOpen}
-                                   width={'105rem'}
-                                   onEscapeKeyDown={(e) => keyEscPress(e)}
-                                   onInteractOutside={(e) => {
-                                        e.preventDefault()
-                                        let {className} = e.target
-                                        if(e){
-                                             setIsOpen(true)
-                                        }
-                                   }}
-                              />
-                         </div>
+                    <>
+                    {
+                         status !== 'error' ?
+                         <div className='flex gap-2'>
+                              <div>
+                                   <Button
+                                        variant={statusMaintenance === 0 ? 'warning' : 'success'}
+                                        onClick={() => changeStatus(id, statusMaintenance)}
+                                   >{
+                                        statusMaintenance === 0 ?
+                                        <div className='flex items-center gap-2'><Construction size={22} className="" />Set Maintenance</div>
+                                        :
+                                        <div className='flex items-center gap-2'><MonitorCheck size={22} className="" />Set Active</div>
+                                   }
+                                   </Button>
+                              </div>
+                              <div>
+                                   <Modal 
+                                        trigger={<Button className="flex gap-2"><Smartphone />View Devices</Button>}
+                                        title={`View Device "${dataKey._id}"`}
+                                        fontSizeTitle={'90px'}
+                                        content={<DeviceMonitoring id={dataKey._id} port={port} ip={ip} />}
+                                        open={isOpen}
+                                        classNameBox={'overflow-y-auto h-[54.7rem]'}
+                                        onOpenChange={setIsOpen}
+                                        width={'105rem'}
+                                        onEscapeKeyDown={(e) => keyEscPress(e)}
+                                        onInteractOutside={(e) => {
+                                             e.preventDefault()
+                                             let {className} = e.target
+                                             if(e){
+                                                  setIsOpen(true)
+                                             }
+                                        }}
+                                   />
+                              </div>
 
-                    </div>
+                         </div>
+                         :
+                         false
+                    }
+                    </>
                )
           }
      }
