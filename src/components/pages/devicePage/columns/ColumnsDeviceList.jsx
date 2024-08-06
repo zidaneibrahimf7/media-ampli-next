@@ -28,19 +28,39 @@ export const ColumnsDeviceList = [
           cell: (key) => {
                const dataKey = key.row.original
                // console.log(dataKey)
-               const statusMaintenance = dataKey.isMaintenance
+               // const statusMaintenance = dataKey.isMaintenance
                // console.log(statusMaintenance)
-               let badgeStatusBasedMaintenance
-               switch(statusMaintenance){
-                    case 0: 
-                         badgeStatusBasedMaintenance = <Badge variant="success">Active</Badge>
+               // let badgeStatusBasedMaintenance
+               // switch(statusMaintenance){
+               //      case 0: 
+               //           badgeStatusBasedMaintenance = <Badge variant="success">Active</Badge>
+               //           break;
+               //      default:
+               //           badgeStatusBasedMaintenance = <Badge variant="warning">Maintenance</Badge>
+               //           break;
+               // }
+
+               const status = dataKey.status
+               // console.log(status)
+
+               let badgeShowStatus
+
+               switch(status){
+                    case 'on': 
+                         badgeShowStatus = <Badge variant="success">Active</Badge>
+                         break;
+                    case 'maintenance':
+                         badgeShowStatus = <Badge variant="warning">Maintenance</Badge>
+                         break;
+                    case 'error':
+                         badgeShowStatus = <Badge variant="danger">Error</Badge>
                          break;
                     default:
-                         badgeStatusBasedMaintenance = <Badge variant="warning">Maintenance</Badge>
+                         badgeShowStatus = ""
                          break;
                }
 
-               return badgeStatusBasedMaintenance
+               return badgeShowStatus
 
           }
      },
